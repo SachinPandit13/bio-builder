@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#7c2435" />
+  <title>Vivah — Marriage Biodata Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
+  <script defer src="app.ts"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Vivah home">
+      <span class="brand-mark">वि</span>
+      <span><strong>Vivah</strong><small>BIODATA STUDIO</small></span>
+    </a>
+    <div class="topbar-actions">
+      <span class="save-note"><span class="save-dot"></span> Live preview enabled</span>
+      <button class="btn btn-quiet" id="resetBtn" type="button">Reset form</button>
+      <button class="btn btn-primary" id="downloadTop" type="button"><span>↓</span> Download PDF</button>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <section class="intro">
+      <div>
+        <p class="eyebrow">A thoughtful first impression</p>
+        <h1>Your story, beautifully arranged.</h1>
+        <p class="intro-copy">Create a polished marriage biodata in minutes. Add your details, choose a design, and export a print-ready PDF.</p>
+      </div>
+      <div class="intro-badge"><span>✦</span><div><strong>Made for A4</strong><small>Print-ready layouts</small></div></div>
+    </section>
+
+    <div class="workspace">
+      <aside class="editor-panel">
+        <div class="panel-heading">
+          <div><p class="eyebrow">Step 01</p><h2>Your details</h2></div>
+          <span class="step-count">EDIT</span>
+        </div>
+        <form id="biodataForm">
+          <section class="form-section">
+            <h3><span class="section-icon">✦</span> Personal information</h3>
+            <div class="field-grid">
+              <label class="field full"><span>Full name</span><input name="fullName" value="Rohit Mahesh Patil" placeholder="e.g. Rohit Mahesh Patil" /></label>
+              <label class="field"><span>Date of birth</span><input name="dob" value="12/04/1994" placeholder="DD/MM/YYYY" /></label>
+              <label class="field"><span>Birth time</span><input name="birthTime" value="5:09 PM" placeholder="e.g. 5:09 PM" /></label>
+              <label class="field"><span>Birth place</span><input name="birthPlace" value="Kolhapur, Maharashtra" placeholder="City, State" /></label>
+              <label class="field"><span>Height</span><input name="height" value="5'8&quot;" placeholder="e.g. 5 ft 8 in" /></label>
+              <label class="field"><span>Religion</span><input name="religion" value="Hindu" placeholder="Religion" /></label>
+              <label class="field"><span>Caste / community</span><input name="community" value="Maratha" placeholder="Community" /></label>
+              <label class="field"><span>Gotra</span><input name="gotra" value="Kashyap" placeholder="Gotra" /></label>
+              <label class="field"><span>Rashi</span><input name="rashi" value="Kanya" placeholder="Rashi" /></label>
+              <label class="field"><span>Manglik status</span><input name="manglik" value="No" placeholder="Yes / No" /></label>
+              <label class="field"><span>Complexion</span><input name="complexion" value="Wheatish" placeholder="Optional" /></label>
+              <label class="field"><span>Blood group</span><input name="bloodGroup" value="O+" placeholder="Optional" /></label>
+              <label class="field full"><span>Education</span><input name="education" value="B.E. (Civil Engineering)" placeholder="Highest qualification" /></label>
+              <label class="field full"><span>Occupation</span><input name="occupation" value="Site Engineer" placeholder="Role / profession" /></label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3><span class="section-icon">⌂</span> Family information</h3>
+            <div class="field-grid">
+              <label class="field full"><span>Father's name</span><input name="fatherName" value="Mahesh Shivaji Patil" placeholder="Father's full name" /></label>
+              <label class="field full"><span>Father's occupation</span><input name="fatherOccupation" value="Agriculture" placeholder="Occupation" /></label>
+              <label class="field full"><span>Mother's name</span><input name="motherName" value="Savita Mahesh Patil" placeholder="Mother's full name" /></label>
+              <label class="field full"><span>Mother's occupation</span><input name="motherOccupation" value="Homemaker" placeholder="Occupation" /></label>
+              <label class="field"><span>Brothers</span><input name="brothers" value="1 (Elder, married)" placeholder="Number / details" /></label>
+              <label class="field"><span>Sisters</span><input name="sisters" value="None" placeholder="Number / details" /></label>
+              <label class="field full"><span>Maternal uncle</span><input name="maternalUncle" value="Sanjay Deshmukh, Sangli" placeholder="Name / place" /></label>
+              <label class="field full"><span>Relatives</span><input name="relatives" value="Patil, Deshmukh, Jadhav" placeholder="Family / relatives" /></label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3><span class="section-icon">⌖</span> Contact information</h3>
+            <div class="field-grid">
+              <label class="field full"><span>Mobile number</span><input name="mobile" value="+91 98765 43210" placeholder="+91 ..." /></label>
+              <label class="field full"><span>Address</span><textarea name="address" rows="2" placeholder="Full address">Shahupuri, Kolhapur - 416001</textarea></label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <h3><span class="section-icon">♡</span> Profile photo</h3>
+            <div class="photo-upload">
+              <div class="upload-preview" id="uploadPreview"><span>RP</span></div>
+              <div class="upload-copy"><strong>Add a portrait</strong><small>Use a clear, vertical photo for the best result.</small><label class="btn btn-outline upload-button" for="photoInput">Choose photo</label><input id="photoInput" type="file" accept="image/*" hidden /></div>
+            </div>
+          </section>
+        </form>
+      </aside>
+
+      <section class="preview-panel">
+        <div class="preview-toolbar">
+          <div><p class="eyebrow">Step 02</p><h2>Choose your design</h2></div>
+          <div class="preview-actions">
+            <button class="btn btn-outline" id="printBtn" type="button">Print / Save PDF</button>
+            <button class="btn btn-primary" id="downloadBtn" type="button">↓ Download PDF</button>
+          </div>
+        </div>
+        <div class="template-strip" id="templateStrip" aria-label="Choose a template">
+          <button class="template-choice active" data-template="floral" type="button"><span class="template-swatch swatch-floral">✿</span><span>Abstract Flower</span></button>
+          <button class="template-choice" data-template="classic" type="button"><span class="template-swatch swatch-classic">ॐ</span><span>Classic Red</span></button>
+          <button class="template-choice" data-template="royal" type="button"><span class="template-swatch swatch-royal">✦</span><span>Royal Gold</span></button>
+          <button class="template-choice" data-template="minimal" type="button"><span class="template-swatch swatch-minimal">—</span><span>Minimal Ivory</span></button>
+          <button class="template-choice" data-template="botanical" type="button"><span class="template-swatch swatch-botanical">❧</span><span>Botanical</span></button>
+          <button class="template-choice" data-template="blush" type="button"><span class="template-swatch swatch-blush">♡</span><span>Blush Bloom</span></button>
+          <button class="template-choice" data-template="maroon" type="button"><span class="template-swatch swatch-maroon">✥</span><span>Maroon Heritage</span></button>
+        </div>
+        <div class="paper-stage">
+          <div class="paper" id="biodataPaper" data-template="floral">
+            <div class="paper-border"></div>
+            <div class="ornament ornament-tl">❧<span>✿</span></div><div class="ornament ornament-tr">❧<span>✿</span></div>
+            <div class="ornament ornament-bl">❧<span>✿</span></div><div class="ornament ornament-br">❧<span>✿</span></div>
+            <header class="paper-header">
+              <div class="ganesh" id="symbolMark">ॐ</div>
+              <div><h2 id="paperTitle">Marriage Biodata</h2><p id="paperBlessing">॥ श्री गणेशाय नमः ॥</p></div>
+              <div class="header-flourish">✦</div>
+            </header>
+            <div class="paper-content">
+              <div class="paper-main">
+                <section class="paper-section">
+                  <h3>Personal Details</h3>
+                  <div class="detail-list" id="personalDetails"></div>
+                </section>
+                <section class="paper-section">
+                  <h3>Family Details</h3>
+                  <div class="detail-list" id="familyDetails"></div>
+                </section>
+                <section class="paper-section contact-section">
+                  <h3>Contact Details</h3>
+                  <div class="detail-list" id="contactDetails"></div>
+                </section>
+              </div>
+              <div class="portrait-frame"><img id="portrait" alt="Profile portrait" /><div id="portraitPlaceholder">Your<br/>photo</div></div>
+            </div>
+            <footer class="paper-footer"><span>✦</span><span id="footerName">Rohit Mahesh Patil</span><span>✦</span></footer>
+          </div>
+        </div>
+        <div class="preview-footer"><span><span class="status-dot"></span> Preview updates as you type</span><span>A4 portrait · PDF-ready</span></div>
+      </section>
+    </div>
+    <footer class="site-footer"><span>✦ Vivah Biodata Studio</span><span>Your details stay in this browser session.</span></footer>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
