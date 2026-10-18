@@ -160,6 +160,15 @@ button {
     gap: 20px
 }
 
+.intro-content {
+    min-width: 0;
+}
+
+.intro-heading-row {
+    display: flex;
+    flex-direction: column;
+}
+
 .eyebrow {
     font-size: 10px;
     letter-spacing: 1.8px;
@@ -183,6 +192,38 @@ button {
     max-width: 590px;
     line-height: 1.7;
     font-size: 13px
+}
+
+@media (min-width: 1024px) {
+    .intro-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .intro-heading-row {
+        flex-direction: row;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .intro-heading-row h1 {
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .intro-copy {
+        margin: 0;
+        max-width: 660px;
+        border-left: 1px solid #ded5da;
+        padding-left: 20px;
+    }
+}
+
+@media (min-width: 1360px) {
+    .intro-copy {
+        max-width: none;
+        white-space: nowrap;
+    }
 }
 
 .intro-badge {
@@ -292,6 +333,59 @@ button {
     background: #fbf0f2;
     color: var(--wine);
     font-size: 13px
+}
+
+.section-icon svg,
+.section-icon [data-lucide] {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2.2px;
+}
+
+.btn svg,
+.btn [data-lucide] {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2px;
+    flex-shrink: 0;
+}
+
+.template-swatch svg,
+.template-swatch [data-lucide] {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2px;
+}
+
+.intro-badge svg,
+.intro-badge [data-lucide] {
+    width: 22px;
+    height: 22px;
+    stroke-width: 2px;
+    color: var(--gold);
+    flex-shrink: 0;
+}
+
+.site-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 0 10px;
+    color: #928891;
+    font-size: 11px;
+}
+
+.site-footer span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.site-footer svg,
+.site-footer [data-lucide] {
+    width: 13px;
+    height: 13px;
+    color: var(--gold);
 }
 
 .field-grid {
