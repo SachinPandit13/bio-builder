@@ -1370,6 +1370,18 @@ button {
     padding-left: 6px
 }
 
+.pdf-render-host {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 794px;
+    height: 1122px;
+    z-index: 80;
+    overflow: hidden;
+    pointer-events: none;
+    background: #fff
+}
+
 .pdf-export.paper,
 .pdf-export.resume-sheet {
     width: 794px !important;
