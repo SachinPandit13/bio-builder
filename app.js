@@ -452,12 +452,26 @@ async function downloadPdf() {
     filename,
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
-      scale: 3,
+      scale: 2,
       useCORS: true,
-      backgroundColor: null,
+      backgroundColor: "#ffffff",
       logging: false,
       scrollX: 0,
-      scrollY: 0
+      scrollY: 0,
+      onclone: (clonedDoc) => {
+        const sheet = clonedDoc.getElementById(activePaper().id);
+        if (!sheet) return;
+        sheet.classList.add("pdf-export");
+        const stage = sheet.parentElement;
+        if (!stage) return;
+        stage.style.display = "block";
+        stage.style.width = "794px";
+        stage.style.maxWidth = "none";
+        stage.style.padding = "0";
+        stage.style.margin = "0";
+        stage.style.overflow = "visible";
+        stage.style.background = "transparent";
+      }
     },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
   };
