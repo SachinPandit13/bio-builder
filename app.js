@@ -193,6 +193,12 @@ function areaControl(field, value, placeholder) {
   return area;
 }
 
+function refreshIcons() {
+  if (window.lucide && typeof window.lucide.createIcons === "function") {
+    window.lucide.createIcons();
+  }
+}
+
 function createEntry(kind, data) {
   const article = document.createElement("article");
   article.className = "repeat-entry";
@@ -203,7 +209,7 @@ function createEntry(kind, data) {
   const remove = document.createElement("button");
   remove.type = "button";
   remove.className = "btn btn-quiet entry-remove";
-  remove.textContent = "Remove";
+  remove.innerHTML = '<i data-lucide="trash-2"></i> Remove';
   remove.addEventListener("click", () => {
     article.remove();
     renderResume();
@@ -232,6 +238,7 @@ function createEntry(kind, data) {
 
 function fillEntries(list, kind, rows) {
   list.replaceChildren(...rows.map((row) => createEntry(kind, row)));
+  refreshIcons();
 }
 
 function readEntries(list, fields) {
@@ -360,6 +367,7 @@ function setMode(mode) {
   introCopy.textContent = copy.copy;
   if (mode === "biodata") renderDetails();
   else renderResume();
+  refreshIcons();
 }
 
 function slugify(value) {
@@ -391,11 +399,13 @@ resumeTab.addEventListener("click", () => setMode("resume"));
 
 requireElement("addExperience").addEventListener("click", () => {
   experienceList.appendChild(createEntry("experience", {}));
+  refreshIcons();
   renderResume();
 });
 
 requireElement("addEducation").addEventListener("click", () => {
   educationList.appendChild(createEntry("education", {}));
+  refreshIcons();
   renderResume();
 });
 
@@ -485,7 +495,7 @@ async function downloadPdf() {
   ];
   buttons.forEach((button) => {
     button.disabled = true;
-    button.dataset.oldText = button.textContent ?? "";
+    button.dataset.oldHtml = button.innerHTML;
     button.textContent = "Preparing…";
   });
   const host = renderPdfSheet(activePaper());
@@ -540,8 +550,9 @@ async function downloadPdf() {
     host.remove();
     buttons.forEach((button) => {
       button.disabled = false;
-      button.textContent = button.dataset.oldText || "Download PDF";
+      button.innerHTML = button.dataset.oldHtml || '<i data-lucide="download"></i> Download PDF';
     });
+    refreshIcons();
   }
 }
 
@@ -599,3 +610,11 @@ fillEntries(educationList, "education", starterEducation);
 renderDetails();
 renderResume();
 setMode("biodata");
+refreshIcons();
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", refreshIcons);
+} else {
+  refreshIcons();
+}
+window.addEventListener("load", refreshIcons);
