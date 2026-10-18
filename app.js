@@ -19,6 +19,7 @@ const paper = requireElement("biodataPaper");
 const portrait = requireElement("portrait");
 const portraitFrame = requireQuery(".portrait-frame");
 const photoInput = requireElement("photoInput");
+const photoToggle = requireElement("photoToggle");
 const uploadPreview = requireElement("uploadPreview");
 const toast = requireElement("toast");
 
@@ -96,6 +97,10 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
 }
 
+function applyPhotoVisibility() {
+  paper.classList.toggle("show-photo", photoToggle.checked);
+}
+
 function selectTemplate(choice) {
   const template = choice.dataset.template || "floral";
   document.querySelectorAll(".template-choice").forEach((button) => {
@@ -108,6 +113,7 @@ function selectTemplate(choice) {
 }
 
 form.addEventListener("input", renderDetails);
+photoToggle.addEventListener("change", applyPhotoVisibility);
 
 document.querySelectorAll(".template-choice").forEach((button) => {
   button.setAttribute("aria-pressed", button.classList.contains("active") ? "true" : "false");
@@ -207,6 +213,7 @@ requireElement("resetBtn").addEventListener("click", () => {
   const initials = document.createElement("span");
   initials.textContent = "RP";
   uploadPreview.appendChild(initials);
+  applyPhotoVisibility();
   const floral = document.querySelector('.template-choice[data-template="floral"]');
   if (floral) selectTemplate(floral);
   else {
@@ -216,4 +223,5 @@ requireElement("resetBtn").addEventListener("click", () => {
   showToast("Form reset.");
 });
 
+applyPhotoVisibility();
 renderDetails();
