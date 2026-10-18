@@ -433,6 +433,37 @@ function printActive() {
   window.print();
 }
 
+function lockA4Box(element) {
+  element.style.setProperty("left", "0", "important");
+  element.style.setProperty("right", "auto", "important");
+  element.style.setProperty("top", "0", "important");
+  element.style.setProperty("position", "relative", "important");
+  element.style.setProperty("transform", "none", "important");
+  element.style.setProperty("width", "794px", "important");
+  element.style.setProperty("height", "1122px", "important");
+  element.style.setProperty("max-width", "none", "important");
+  element.style.setProperty("min-width", "794px", "important");
+  element.style.setProperty("min-height", "1122px", "important");
+  element.style.setProperty("aspect-ratio", "auto", "important");
+  element.style.setProperty("margin", "0", "important");
+  element.style.setProperty("box-shadow", "none", "important");
+  element.style.setProperty("overflow", "hidden", "important");
+  element.style.setProperty("box-sizing", "border-box", "important");
+}
+
+function renderPdfSheet(source) {
+  const host = document.createElement("div");
+  host.className = "pdf-render-host";
+  const sheet = source.cloneNode(true);
+  sheet.removeAttribute("id");
+  sheet.querySelectorAll("[id]").forEach((node) => node.removeAttribute("id"));
+  sheet.classList.add("pdf-export");
+  lockA4Box(sheet);
+  host.appendChild(sheet);
+  document.body.appendChild(host);
+  return host;
+}
+
 async function downloadPdf() {
   if (currentMode === "resume") renderResume();
   else renderDetails();
@@ -447,34 +478,6 @@ async function downloadPdf() {
   const filename = currentMode === "resume"
     ? `${slug || "resume"}-resume.pdf`
     : `${slug || "marriage-biodata"}.pdf`;
-  const options = {
-    margin: 0,
-    filename,
-    image: { type: "jpeg", quality: 0.98 },
-    html2canvas: {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: "#ffffff",
-      logging: false,
-      scrollX: 0,
-      scrollY: 0,
-      onclone: (clonedDoc) => {
-        const sheet = clonedDoc.getElementById(activePaper().id);
-        if (!sheet) return;
-        sheet.classList.add("pdf-export");
-        const stage = sheet.parentElement;
-        if (!stage) return;
-        stage.style.display = "block";
-        stage.style.width = "794px";
-        stage.style.maxWidth = "none";
-        stage.style.padding = "0";
-        stage.style.margin = "0";
-        stage.style.overflow = "visible";
-        stage.style.background = "transparent";
-      }
-    },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-  };
   const buttons = [
     requireElement("downloadBtn"),
     requireElement("downloadTop"),
@@ -485,13 +488,56 @@ async function downloadPdf() {
     button.dataset.oldText = button.textContent ?? "";
     button.textContent = "Preparing…";
   });
+  const host = renderPdfSheet(activePaper());
+  const sheet = host.firstElementChild;
   try {
-    await window.html2pdf().set(options).from(activePaper()).save();
+    if (document.fonts && document.fonts.ready) await document.fonts.ready;
+    await new Promise((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(resolve));
+    });
+    await window.html2pdf().set({
+      margin: 0,
+      filename,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 794,
+        windowHeight: 1122,
+        width: 794,
+        height: 1122,
+        x: 0,
+        y: 0,
+        onclone: (clonedDoc) => {
+          const overlay = clonedDoc.querySelector(".html2pdf__overlay");
+          const container = clonedDoc.querySelector(".html2pdf__container");
+          const rendered = clonedDoc.querySelector(".pdf-export");
+          [overlay, container, rendered].forEach((node) => {
+            if (!node) return;
+            node.style.setProperty("left", "0", "important");
+            node.style.setProperty("right", "auto", "important");
+            node.style.setProperty("top", "0", "important");
+            node.style.setProperty("width", "794px", "important");
+            node.style.setProperty("height", "1122px", "important");
+            node.style.setProperty("margin", "0", "important");
+            node.style.setProperty("overflow", "hidden", "important");
+            node.style.setProperty("position", "absolute", "important");
+          });
+          if (rendered) lockA4Box(rendered);
+        }
+      },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    }).from(sheet).save();
     showToast(currentMode === "resume" ? "Your resume PDF is ready." : "Your biodata PDF is ready.");
   } catch (error) {
     console.error("PDF export failed:", error);
     showToast("PDF export failed. Try Print / Save PDF.");
   } finally {
+    host.remove();
     buttons.forEach((button) => {
       button.disabled = false;
       button.textContent = button.dataset.oldText || "Download PDF";
