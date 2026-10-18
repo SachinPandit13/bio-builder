@@ -648,11 +648,14 @@ button {
     gap: 9px;
     text-align: center;
     border-bottom: 1px solid var(--paper-gold);
-    padding: 0 0 10px;
+    padding: 0 34px 10px;
     margin: 0 0 13px
 }
 
 .ganesh {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 29px;
     height: 29px;
     border: 1px solid var(--paper-gold);
