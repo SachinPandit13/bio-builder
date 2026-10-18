@@ -459,8 +459,7 @@ async function downloadPdf() {
       scrollX: 0,
       scrollY: 0
     },
-    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    pagebreak: { mode: ["avoid-all", "css", "legacy"] }
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
   };
   const buttons = [
     requireElement("downloadBtn"),
