@@ -1094,6 +1094,58 @@ button {
     color: #d4b483
 }
 
+.swatch-format-it {
+    background: #1d4f91;
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 0.875rem;
+    font-weight: 700
+}
+
+.accent-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem
+}
+
+.accent-swatch {
+    width: 2.75rem;
+    height: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    box-shadow: 0 0 0 1px #ded5da;
+    background: #1d4f91
+}
+
+.accent-swatch[data-accent="navy"] {
+    background: #1b2430
+}
+
+.accent-swatch[data-accent="teal"] {
+    background: #1f6b56
+}
+
+.accent-swatch[data-accent="burgundy"] {
+    background: #8b2e42
+}
+
+.accent-swatch.active {
+    box-shadow: 0 0 0 2px var(--wine)
+}
+
+.project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin-top: 0.75rem
+}
+
+.section-toggle {
+    margin-top: 0.75rem
+}
+
 .resume-sheet {
     position: relative;
     width: 100%;
@@ -1223,11 +1275,19 @@ button {
 .resume-sheet[data-format="compact"] .resume-body {
     display: grid;
     grid-template-columns: minmax(0, 1.4fr) minmax(0, .85fr);
+    grid-auto-flow: dense;
     gap: 12px;
     align-items: start
 }
 
-.resume-sheet[data-format="compact"] .resume-secondary {
+.resume-sheet[data-format="compact"] .resume-summary-block,
+.resume-sheet[data-format="compact"] .resume-experience-block {
+    grid-column: 1
+}
+
+.resume-sheet[data-format="compact"] .resume-education-block,
+.resume-sheet[data-format="compact"] .resume-skills-block {
+    grid-column: 2;
     border-left: 1px solid #d5dde3;
     padding-left: 10px
 }
@@ -1283,6 +1343,106 @@ button {
     padding-left: 6px
 }
 
+.resume-sheet[data-format="it"] {
+    background: #fff;
+    color: #1c1c1c
+}
+
+.resume-sheet[data-format="it"] .resume-header {
+    text-align: center;
+    margin-bottom: 10px
+}
+
+.resume-sheet[data-format="it"] .resume-name {
+    font-family: var(--sans);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #1d4f91
+}
+
+.resume-sheet[data-format="it"] .resume-role,
+.resume-sheet[data-format="it"] .resume-contact {
+    color: #243042
+}
+
+.resume-sheet[data-format="it"] .resume-body {
+    display: flex;
+    flex-direction: column;
+    gap: 9px
+}
+
+.resume-sheet[data-format="it"] .resume-block h3 {
+    color: #1d4f91;
+    border-bottom: 1px solid #1d4f91;
+    padding-bottom: 2px;
+    letter-spacing: 0.06em
+}
+
+.resume-sheet[data-format="it"][data-accent="navy"] .resume-name,
+.resume-sheet[data-format="it"][data-accent="navy"] .resume-block h3 {
+    color: #1b2430;
+    border-bottom-color: #1b2430
+}
+
+.resume-sheet[data-format="it"][data-accent="teal"] .resume-name,
+.resume-sheet[data-format="it"][data-accent="teal"] .resume-block h3 {
+    color: #1f6b56;
+    border-bottom-color: #1f6b56
+}
+
+.resume-sheet[data-format="it"][data-accent="burgundy"] .resume-name,
+.resume-sheet[data-format="it"][data-accent="burgundy"] .resume-block h3 {
+    color: #8b2e42;
+    border-bottom-color: #8b2e42
+}
+
+.skill-row {
+    display: grid;
+    grid-template-columns: 34% minmax(0, 1fr);
+    gap: 6px;
+    margin: 0 0 3px;
+    font-size: clamp(7px, 1vw, 9px);
+    line-height: 1.35
+}
+
+.skill-row strong {
+    font-weight: 700
+}
+
+.role-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px
+}
+
+.role-dates {
+    flex-shrink: 0;
+    font-size: clamp(7px, 1vw, 9px);
+    font-weight: 600
+}
+
+.project-item {
+    margin-top: 4px
+}
+
+.project-name {
+    margin: 3px 0 0;
+    font-size: clamp(7px, 1.05vw, 10px);
+    font-style: italic
+}
+
+.edu-line {
+    margin: 0;
+    font-size: clamp(8px, 1.15vw, 11px);
+    line-height: 1.35
+}
+
+.cert-item {
+    margin: 0 0 4px
+}
+
 .resume-name,
 .resume-role,
 .resume-contact,
@@ -1290,6 +1450,9 @@ button {
 .resume-meta,
 .resume-bullets,
 .edu-item,
+.edu-line,
+.skill-row,
+.project-name,
 .resume-skills {
     overflow-wrap: anywhere
 }
@@ -1419,7 +1582,67 @@ button {
 }
 
 .pdf-export.resume-sheet[data-format="compact"] .resume-body {
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.85fr) !important
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.85fr) !important;
+    grid-auto-flow: dense !important
+}
+
+.pdf-export.resume-sheet[data-format="compact"] .resume-summary-block,
+.pdf-export.resume-sheet[data-format="compact"] .resume-experience-block {
+    grid-column: 1 !important
+}
+
+.pdf-export.resume-sheet[data-format="compact"] .resume-education-block,
+.pdf-export.resume-sheet[data-format="compact"] .resume-skills-block {
+    grid-column: 2 !important
+}
+
+.pdf-export.resume-sheet[data-format="it"] .resume-header {
+    text-align: center !important
+}
+
+.pdf-export.resume-sheet[data-format="it"] .resume-name {
+    font-family: "DM Sans", Arial, sans-serif !important;
+    font-size: 22px !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    color: #1d4f91 !important
+}
+
+.pdf-export.resume-sheet[data-format="it"] .resume-block h3 {
+    font-size: 12px !important;
+    color: #1d4f91 !important;
+    border-bottom: 1px solid #1d4f91 !important;
+    padding-bottom: 3px !important
+}
+
+.pdf-export.resume-sheet[data-format="it"][data-accent="navy"] .resume-name,
+.pdf-export.resume-sheet[data-format="it"][data-accent="navy"] .resume-block h3 {
+    color: #1b2430 !important;
+    border-bottom-color: #1b2430 !important
+}
+
+.pdf-export.resume-sheet[data-format="it"][data-accent="teal"] .resume-name,
+.pdf-export.resume-sheet[data-format="it"][data-accent="teal"] .resume-block h3 {
+    color: #1f6b56 !important;
+    border-bottom-color: #1f6b56 !important
+}
+
+.pdf-export.resume-sheet[data-format="it"][data-accent="burgundy"] .resume-name,
+.pdf-export.resume-sheet[data-format="it"][data-accent="burgundy"] .resume-block h3 {
+    color: #8b2e42 !important;
+    border-bottom-color: #8b2e42 !important
+}
+
+.pdf-export .skill-row,
+.pdf-export .role-dates,
+.pdf-export .project-name,
+.pdf-export .edu-line {
+    font-size: 12px !important
+}
+
+.pdf-export .skill-row {
+    grid-template-columns: 32% minmax(0, 1fr) !important;
+    gap: 8px !important
 }
 
 @page {
@@ -1602,7 +1825,59 @@ button {
     }
 
     .resume-sheet[data-format="compact"] .resume-body {
-        grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.85fr) !important
+        grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.85fr) !important;
+        grid-auto-flow: dense !important
+    }
+
+    .resume-sheet[data-format="compact"] .resume-summary-block,
+    .resume-sheet[data-format="compact"] .resume-experience-block {
+        grid-column: 1 !important
+    }
+
+    .resume-sheet[data-format="compact"] .resume-education-block,
+    .resume-sheet[data-format="compact"] .resume-skills-block {
+        grid-column: 2 !important
+    }
+
+    .resume-sheet[data-format="it"] .resume-header {
+        text-align: center !important
+    }
+
+    .resume-sheet[data-format="it"] .resume-name {
+        font-family: "DM Sans", Arial, sans-serif !important;
+        font-size: 18pt !important;
+        text-transform: uppercase !important;
+        color: #1d4f91 !important
+    }
+
+    .resume-sheet[data-format="it"] .resume-block h3 {
+        color: #1d4f91 !important;
+        border-bottom: 1px solid #1d4f91 !important
+    }
+
+    .resume-sheet[data-format="it"][data-accent="navy"] .resume-name,
+    .resume-sheet[data-format="it"][data-accent="navy"] .resume-block h3 {
+        color: #1b2430 !important;
+        border-bottom-color: #1b2430 !important
+    }
+
+    .resume-sheet[data-format="it"][data-accent="teal"] .resume-name,
+    .resume-sheet[data-format="it"][data-accent="teal"] .resume-block h3 {
+        color: #1f6b56 !important;
+        border-bottom-color: #1f6b56 !important
+    }
+
+    .resume-sheet[data-format="it"][data-accent="burgundy"] .resume-name,
+    .resume-sheet[data-format="it"][data-accent="burgundy"] .resume-block h3 {
+        color: #8b2e42 !important;
+        border-bottom-color: #8b2e42 !important
+    }
+
+    .skill-row,
+    .role-dates,
+    .project-name,
+    .edu-line {
+        font-size: 9pt !important
     }
 }
 
