@@ -512,6 +512,61 @@ Shahupuri, Kolhapur - 416001</textarea
                     value="linkedin.com/in/aaravmehta"
                     placeholder="linkedin.com/in/..."
                 /></label>
+                <label class="field"
+                  ><span>LinkedIn</span
+                  ><input
+                    name="linkedin"
+                    value=""
+                    placeholder="linkedin.com/in/..."
+                /></label>
+                <label class="field"
+                  ><span>GitHub</span
+                  ><input
+                    name="github"
+                    value=""
+                    placeholder="github.com/..."
+                /></label>
+              </div>
+            </section>
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"><i data-lucide="palette"></i></span>
+                Accent
+              </h3>
+              <div
+                class="accent-row"
+                id="accentRow"
+                role="radiogroup"
+                aria-label="Accent color"
+              >
+                <button
+                  class="accent-swatch active"
+                  type="button"
+                  data-accent="blue"
+                  aria-label="Blue"
+                  aria-pressed="true"
+                ></button>
+                <button
+                  class="accent-swatch"
+                  type="button"
+                  data-accent="navy"
+                  aria-label="Navy"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  class="accent-swatch"
+                  type="button"
+                  data-accent="teal"
+                  aria-label="Teal"
+                  aria-pressed="false"
+                ></button>
+                <button
+                  class="accent-swatch"
+                  type="button"
+                  data-accent="burgundy"
+                  aria-label="Burgundy"
+                  aria-pressed="false"
+                ></button>
               </div>
             </section>
             <section class="form-section">
@@ -521,6 +576,14 @@ Shahupuri, Kolhapur - 416001</textarea
                 ></span>
                 Summary
               </h3>
+              <label class="photo-toggle section-toggle">
+                <input id="toggleSummary" type="checkbox" checked />
+                <span class="photo-switch" aria-hidden="true"></span>
+                <span class="photo-toggle-copy"
+                  ><strong>Show summary</strong
+                  ><small>Hide this block on the resume.</small></span
+                >
+              </label>
               <label class="field"
                 ><span>Professional summary</span
                 ><textarea
@@ -539,6 +602,14 @@ Product manager with 8 years of experience turning customer problems into shippe
                 ></span>
                 Experience
               </h3>
+              <label class="photo-toggle section-toggle">
+                <input id="toggleExperience" type="checkbox" checked />
+                <span class="photo-switch" aria-hidden="true"></span>
+                <span class="photo-toggle-copy"
+                  ><strong>Show experience</strong
+                  ><small>Hide this block on the resume.</small></span
+                >
+              </label>
               <div id="experienceList" class="entry-list"></div>
               <button
                 class="btn btn-outline add-entry"
@@ -555,6 +626,14 @@ Product manager with 8 years of experience turning customer problems into shippe
                 ></span>
                 Education
               </h3>
+              <label class="photo-toggle section-toggle">
+                <input id="toggleEducation" type="checkbox" checked />
+                <span class="photo-switch" aria-hidden="true"></span>
+                <span class="photo-toggle-copy"
+                  ><strong>Show education</strong
+                  ><small>Hide this block on the resume.</small></span
+                >
+              </label>
               <div id="educationList" class="entry-list"></div>
               <button
                 class="btn btn-outline add-entry"
@@ -569,6 +648,25 @@ Product manager with 8 years of experience turning customer problems into shippe
                 <span class="section-icon"><i data-lucide="wrench"></i></span>
                 Skills
               </h3>
+              <label class="photo-toggle section-toggle">
+                <input id="toggleSkills" type="checkbox" checked />
+                <span class="photo-switch" aria-hidden="true"></span>
+                <span class="photo-toggle-copy"
+                  ><strong>Show skills</strong
+                  ><small
+                    >Groups are used on the IT format. The comma list is used
+                    on the other formats.</small
+                  ></span
+                >
+              </label>
+              <div id="skillGroupList" class="entry-list"></div>
+              <button
+                class="btn btn-outline add-entry"
+                id="addSkillGroup"
+                type="button"
+              >
+                <i data-lucide="plus"></i> Add skill group
+              </button>
               <label class="field"
                 ><span>Skills, separated by commas</span
                 ><input
@@ -576,6 +674,50 @@ Product manager with 8 years of experience turning customer problems into shippe
                   value="Product strategy, Roadmapping, Experimentation, SQL, Stakeholder management, Figma"
                   placeholder="Skill, Skill, Skill"
               /></label>
+            </section>
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"><i data-lucide="trophy"></i></span>
+                Key achievements
+              </h3>
+              <label class="photo-toggle section-toggle">
+                <input id="toggleAchievements" type="checkbox" checked />
+                <span class="photo-switch" aria-hidden="true"></span>
+                <span class="photo-toggle-copy"
+                  ><strong>Show achievements</strong
+                  ><small>Shown on the IT format.</small></span
+                >
+              </label>
+              <label class="field"
+                ><span>One achievement per line</span
+                ><textarea
+                  name="achievements"
+                  rows="4"
+                  placeholder="Shipped a production API."
+                ></textarea>
+              </label>
+            </section>
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"><i data-lucide="award"></i></span>
+                Certificates
+              </h3>
+              <label class="photo-toggle section-toggle">
+                <input id="toggleCertificates" type="checkbox" checked />
+                <span class="photo-switch" aria-hidden="true"></span>
+                <span class="photo-toggle-copy"
+                  ><strong>Show certificates</strong
+                  ><small>Shown on the IT format.</small></span
+                >
+              </label>
+              <div id="certificateList" class="entry-list"></div>
+              <button
+                class="btn btn-outline add-entry"
+                id="addCertificate"
+                type="button"
+              >
+                <i data-lucide="plus"></i> Add certificate
+              </button>
             </section>
           </form>
         </aside>
@@ -605,9 +747,14 @@ Product manager with 8 years of experience turning customer problems into shippe
           >
             <button
               class="template-choice active"
-              data-format="classic"
+              data-format="it"
               type="button"
             >
+              <span class="template-swatch swatch-format-it"
+                ><i data-lucide="briefcase"></i></span
+              ><span>Professional</span>
+            </button>
+            <button class="template-choice" data-format="classic" type="button">
               <span class="template-swatch swatch-format-classic">Aa</span
               ><span>Classic</span>
             </button>
@@ -635,7 +782,8 @@ Product manager with 8 years of experience turning customer problems into shippe
             <article
               class="resume-sheet"
               id="resumePaper"
-              data-format="classic"
+              data-format="it"
+              data-accent="blue"
             >
               <header class="resume-header">
                 <h2 class="resume-name" id="resumeName">Aarav Mehta</h2>
@@ -645,26 +793,30 @@ Product manager with 8 years of experience turning customer problems into shippe
                 <p class="resume-contact" id="resumeContact"></p>
               </header>
               <div class="resume-body">
-                <div class="resume-primary" id="resumePrimary">
-                  <section class="resume-block" id="resumeSummarySection">
-                    <h3>Summary</h3>
-                    <p class="resume-summary" id="resumeSummary"></p>
-                  </section>
-                  <section class="resume-block" id="resumeExperienceSection">
-                    <h3>Experience</h3>
-                    <div id="resumeExperience"></div>
-                  </section>
-                </div>
-                <div class="resume-secondary" id="resumeSecondary">
-                  <section class="resume-block" id="resumeEducationSection">
-                    <h3>Education</h3>
-                    <div id="resumeEducation"></div>
-                  </section>
-                  <section class="resume-block" id="resumeSkillsSection">
-                    <h3>Skills</h3>
-                    <ul class="resume-skills" id="resumeSkills"></ul>
-                  </section>
-                </div>
+                <section class="resume-block resume-summary-block" id="resumeSummarySection">
+                  <h3>Summary</h3>
+                  <p class="resume-summary" id="resumeSummary"></p>
+                </section>
+                <section class="resume-block resume-skills-block" id="resumeSkillsSection">
+                  <h3>Skills</h3>
+                  <div id="resumeSkills"></div>
+                </section>
+                <section class="resume-block resume-experience-block" id="resumeExperienceSection">
+                  <h3>Experience</h3>
+                  <div id="resumeExperience"></div>
+                </section>
+                <section class="resume-block resume-education-block" id="resumeEducationSection">
+                  <h3>Education</h3>
+                  <div id="resumeEducation"></div>
+                </section>
+                <section class="resume-block" id="resumeAchievementsSection" hidden>
+                  <h3>Key Achievements</h3>
+                  <ul class="resume-bullets" id="resumeAchievements"></ul>
+                </section>
+                <section class="resume-block" id="resumeCertificatesSection" hidden>
+                  <h3>Certificates</h3>
+                  <div id="resumeCertificates"></div>
+                </section>
               </div>
             </article>
           </div>
