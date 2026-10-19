@@ -1,11 +1,11 @@
-const CACHE = "vivah-v3";
+const CACHE = "biocraft-v4";
 const FILES = [
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./icons/BioCraft_logo.png",
   "./icons/icon.svg",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
+  "./icons/favicon.ico"
 ];
 
 self.addEventListener("install", (event) => {
