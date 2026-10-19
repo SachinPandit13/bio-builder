@@ -33,6 +33,15 @@ const resumeForm = requireElement("resumeForm");
 const resumePaper = requireElement("resumePaper");
 const experienceList = requireElement("experienceList");
 const educationList = requireElement("educationList");
+const skillGroupList = requireElement("skillGroupList");
+const certificateList = requireElement("certificateList");
+
+const accentColors = {
+  blue: "#1d4f91",
+  navy: "#1b2430",
+  teal: "#1f6b56",
+  burgundy: "#8b2e42"
+};
 
 const personalFields = [
   ["Full Name", "fullName"], ["Date of Birth", "dob"], ["Birth Time", "birthTime"],
@@ -163,8 +172,13 @@ function selectTemplate(choice) {
 }
 
 function entryValue(entry, field) {
-  const control = entry.querySelector(`[data-field="${field}"]`);
+  const control = entry.querySelector(`:scope > .field-grid [data-field="${field}"]`);
   return control ? control.value.trim() : "";
+}
+
+function sectionEnabled(id) {
+  const toggle = document.getElementById(id);
+  return !toggle || toggle.checked;
 }
 
 function labeledControl(label, control, full) {
@@ -199,13 +213,41 @@ function refreshIcons() {
   }
 }
 
+function createProject(data) {
+  const article = document.createElement("article");
+  article.className = "repeat-entry project-entry";
+  const head = document.createElement("div");
+  head.className = "entry-head";
+  const title = document.createElement("strong");
+  title.textContent = "Project";
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.className = "btn btn-quiet entry-remove";
+  remove.innerHTML = '<i data-lucide="trash-2"></i> Remove';
+  remove.addEventListener("click", () => {
+    article.remove();
+    renderResume();
+  });
+  head.append(title, remove);
+  const grid = document.createElement("div");
+  grid.className = "field-grid";
+  grid.append(
+    labeledControl("Project name", textControl("projectName", data.name, "Project name"), true),
+    labeledControl("Dates", textControl("projectDates", data.dates, "2024 — Present")),
+    labeledControl("Highlights", areaControl("projectBullets", data.bullets, "One highlight per line"), true)
+  );
+  article.append(head, grid);
+  return article;
+}
+
 function createEntry(kind, data) {
   const article = document.createElement("article");
   article.className = "repeat-entry";
   const head = document.createElement("div");
   head.className = "entry-head";
   const title = document.createElement("strong");
-  title.textContent = kind === "experience" ? "Role" : "Education";
+  const labels = { experience: "Role", education: "Education", skill: "Skill group", certificate: "Certificate" };
+  title.textContent = labels[kind] || "Entry";
   const remove = document.createElement("button");
   remove.type = "button";
   remove.className = "btn btn-quiet entry-remove";
@@ -219,17 +261,44 @@ function createEntry(kind, data) {
   grid.className = "field-grid";
   if (kind === "experience") {
     grid.append(
-      labeledControl("Job title", textControl("role", data.role, "e.g. Product Manager")),
+      labeledControl("Job title", textControl("role", data.role, "e.g. Software Engineer")),
       labeledControl("Company", textControl("company", data.company, "Company")),
       labeledControl("Dates", textControl("dates", data.dates, "2021 — Present")),
       labeledControl("Location", textControl("location", data.location, "City")),
-      labeledControl("Highlights", areaControl("bullets", data.bullets, "One achievement per line"), true)
+      labeledControl("Highlights", areaControl("bullets", data.bullets, "One highlight per line"), true)
+    );
+    const projects = document.createElement("div");
+    projects.className = "project-list";
+    (data.projects || []).forEach((project) => projects.appendChild(createProject(project)));
+    const addProject = document.createElement("button");
+    addProject.type = "button";
+    addProject.className = "btn btn-outline add-entry";
+    addProject.innerHTML = '<i data-lucide="plus"></i> Add project';
+    addProject.addEventListener("click", () => {
+      projects.appendChild(createProject({}));
+      refreshIcons();
+      renderResume();
+    });
+    article.append(head, grid, projects, addProject);
+    return article;
+  }
+  if (kind === "skill") {
+    grid.append(
+      labeledControl("Category", textControl("category", data.category, "e.g. Languages"), true),
+      labeledControl("Skills", textControl("skills", data.skills, "Python, SQL, TypeScript"), true)
+    );
+  } else if (kind === "certificate") {
+    grid.append(
+      labeledControl("Name", textControl("name", data.name, "Certificate name"), true),
+      labeledControl("Issuer", textControl("issuer", data.issuer, "Issuer")),
+      labeledControl("Date", textControl("date", data.date, "2024"))
     );
   } else {
     grid.append(
       labeledControl("School", textControl("school", data.school, "School or university"), true),
       labeledControl("Credential", textControl("credential", data.credential, "Degree or certificate")),
-      labeledControl("Year", textControl("year", data.year, "2018"))
+      labeledControl("Year", textControl("year", data.year, "2018")),
+      labeledControl("Score", textControl("score", data.score, "CGPA: 7.93 / 10"))
     );
   }
   article.append(head, grid);
@@ -242,7 +311,7 @@ function fillEntries(list, kind, rows) {
 }
 
 function readEntries(list, fields) {
-  return [...list.querySelectorAll(".repeat-entry")].map((entry) => {
+  return [...list.querySelectorAll(":scope > .repeat-entry")].map((entry) => {
     const record = {};
     fields.forEach((field) => {
       record[field] = entryValue(entry, field);
@@ -259,14 +328,58 @@ function appendParagraph(parent, className, text) {
   parent.appendChild(paragraph);
 }
 
+function appendBullets(parent, text) {
+  const lines = String(text || "").split("\n").map((line) => line.trim()).filter(Boolean);
+  if (!lines.length) return;
+  const list = document.createElement("ul");
+  list.className = "resume-bullets";
+  lines.forEach((line) => {
+    const item = document.createElement("li");
+    item.textContent = line;
+    list.appendChild(item);
+  });
+  parent.appendChild(list);
+}
+
+function readProjects(entry) {
+  return [...entry.querySelectorAll(":scope > .project-list > .project-entry")].map((project) => ({
+    name: entryValue(project, "projectName"),
+    dates: entryValue(project, "projectDates"),
+    bullets: entryValue(project, "projectBullets")
+  })).filter((project) => project.name || project.dates || project.bullets);
+}
+
+function readExperience() {
+  return [...experienceList.querySelectorAll(":scope > .repeat-entry")].map((entry) => {
+    const record = {
+      role: entryValue(entry, "role"),
+      company: entryValue(entry, "company"),
+      dates: entryValue(entry, "dates"),
+      location: entryValue(entry, "location"),
+      bullets: entryValue(entry, "bullets"),
+      projects: readProjects(entry)
+    };
+    return record;
+  }).filter((record) => record.role || record.company || record.dates || record.location || record.bullets || record.projects.length);
+}
+
+function setHeading(id, text) {
+  const heading = requireElement(id).querySelector("h3");
+  if (heading) heading.textContent = text;
+}
+
 function renderResume() {
+  const it = (resumePaper.dataset.format || "it") === "it";
   const name = getValue(resumeForm, "resumeName") || "Resume";
   const title = getValue(resumeForm, "jobTitle");
-  const contact = ["email", "phone", "city", "website"].map((key) => getValue(resumeForm, key)).filter(Boolean);
+  const contact = ["email", "phone", "linkedin", "website", "github", "city"].map((key) => getValue(resumeForm, key)).filter(Boolean);
   const summary = getValue(resumeForm, "summary");
-  const experience = readEntries(experienceList, ["role", "company", "dates", "location", "bullets"]);
-  const education = readEntries(educationList, ["school", "credential", "year"]);
+  const experience = readExperience();
+  const education = readEntries(educationList, ["school", "credential", "year", "score"]);
+  const skillGroups = readEntries(skillGroupList, ["category", "skills"]);
   const skills = getValue(resumeForm, "skills").split(",").map((skill) => skill.trim()).filter(Boolean);
+  const achievements = getValue(resumeForm, "achievements").split("\n").map((line) => line.trim()).filter(Boolean);
+  const certificates = readEntries(certificateList, ["name", "issuer", "date"]);
 
   requireElement("resumeName").textContent = name;
   const roleEl = requireElement("resumeRole");
@@ -276,74 +389,166 @@ function renderResume() {
   contactEl.textContent = contact.join("  ·  ");
   contactEl.hidden = contact.length === 0;
 
+  setHeading("resumeSummarySection", it ? "Professional Summary" : "Summary");
+  setHeading("resumeSkillsSection", it ? "Core Technical Skills" : "Skills");
+  setHeading("resumeExperienceSection", it ? "Professional Experience" : "Experience");
+  setHeading("resumeEducationSection", "Education");
+
   const summaryEl = requireElement("resumeSummary");
   summaryEl.textContent = summary;
-  requireElement("resumeSummarySection").hidden = !summary;
+  requireElement("resumeSummarySection").hidden = !sectionEnabled("toggleSummary") || !summary;
 
   const experienceRoot = requireElement("resumeExperience");
   experienceRoot.replaceChildren();
   experience.forEach((item) => {
     const block = document.createElement("article");
     block.className = "role-item";
-    const heading = document.createElement("strong");
-    heading.className = "role-title";
-    heading.textContent = item.role || item.company;
-    if (item.role || item.company) block.appendChild(heading);
-    const meta = [item.role && item.company ? item.company : "", item.dates, item.location].filter(Boolean).join("  ·  ");
-    appendParagraph(block, "resume-meta", meta);
-    const lines = item.bullets.split("\n").map((line) => line.trim()).filter(Boolean);
-    if (lines.length) {
-      const list = document.createElement("ul");
-      list.className = "resume-bullets";
-      lines.forEach((line) => {
-        const li = document.createElement("li");
-        li.textContent = line;
-        list.appendChild(li);
-      });
-      block.appendChild(list);
+    if (it) {
+      const line = document.createElement("div");
+      line.className = "role-line";
+      const heading = document.createElement("strong");
+      heading.className = "role-title";
+      heading.textContent = [item.role, item.company, item.location].filter(Boolean).join(" | ");
+      line.appendChild(heading);
+      if (item.dates) {
+        const dates = document.createElement("span");
+        dates.className = "role-dates";
+        dates.textContent = item.dates;
+        line.appendChild(dates);
+      }
+      if (heading.textContent || item.dates) block.appendChild(line);
+      if (item.projects.length) {
+        item.projects.forEach((project) => {
+          const projectBlock = document.createElement("article");
+          projectBlock.className = "project-item";
+          if (project.name) {
+            const projectName = document.createElement("p");
+            projectName.className = "project-name";
+            projectName.textContent = `Project: ${project.name}`;
+            projectBlock.appendChild(projectName);
+          }
+          appendParagraph(projectBlock, "resume-meta", project.dates);
+          appendBullets(projectBlock, project.bullets);
+          block.appendChild(projectBlock);
+        });
+      } else {
+        appendBullets(block, item.bullets);
+      }
+    } else {
+      const heading = document.createElement("strong");
+      heading.className = "role-title";
+      heading.textContent = item.role || item.company;
+      if (item.role || item.company) block.appendChild(heading);
+      const meta = [item.role && item.company ? item.company : "", item.dates, item.location].filter(Boolean).join("  ·  ");
+      appendParagraph(block, "resume-meta", meta);
+      appendBullets(block, item.bullets);
     }
     experienceRoot.appendChild(block);
   });
-  requireElement("resumeExperienceSection").hidden = experience.length === 0;
+  requireElement("resumeExperienceSection").hidden = !sectionEnabled("toggleExperience") || experience.length === 0;
 
   const educationRoot = requireElement("resumeEducation");
   educationRoot.replaceChildren();
   education.forEach((item) => {
     const block = document.createElement("article");
     block.className = "edu-item";
-    const heading = document.createElement("strong");
-    heading.className = "edu-credential";
-    heading.textContent = item.credential || item.school;
-    if (item.credential || item.school) block.appendChild(heading);
-    const meta = [item.credential ? item.school : "", item.year].filter(Boolean).join("  ·  ");
-    appendParagraph(block, "resume-meta", meta);
+    if (it) {
+      const line = document.createElement("p");
+      line.className = "edu-line";
+      const credential = document.createElement("strong");
+      credential.textContent = item.credential || item.school;
+      line.appendChild(credential);
+      const rest = [item.credential ? item.school : "", item.year].filter(Boolean);
+      if (rest.length) line.append(` | ${rest.join(" | ")}`);
+      if (credential.textContent) block.appendChild(line);
+      appendParagraph(block, "resume-meta", item.score);
+    } else {
+      const heading = document.createElement("strong");
+      heading.className = "edu-credential";
+      heading.textContent = item.credential || item.school;
+      if (item.credential || item.school) block.appendChild(heading);
+      const meta = [item.credential ? item.school : "", item.year, item.score].filter(Boolean).join("  ·  ");
+      appendParagraph(block, "resume-meta", meta);
+    }
     educationRoot.appendChild(block);
   });
-  requireElement("resumeEducationSection").hidden = education.length === 0;
+  requireElement("resumeEducationSection").hidden = !sectionEnabled("toggleEducation") || education.length === 0;
 
   const skillsRoot = requireElement("resumeSkills");
   skillsRoot.replaceChildren();
-  skills.forEach((skill) => {
-    const li = document.createElement("li");
-    li.textContent = skill;
-    skillsRoot.appendChild(li);
-  });
-  requireElement("resumeSkillsSection").hidden = skills.length === 0;
+  if (it) {
+    skillGroups.forEach((group) => {
+      const row = document.createElement("div");
+      row.className = "skill-row";
+      const label = document.createElement("strong");
+      label.textContent = group.category;
+      const value = document.createElement("span");
+      value.textContent = group.skills;
+      if (group.category) row.appendChild(label);
+      if (group.skills) row.appendChild(value);
+      skillsRoot.appendChild(row);
+    });
+    requireElement("resumeSkillsSection").hidden = !sectionEnabled("toggleSkills") || skillGroups.length === 0;
+  } else {
+    const list = document.createElement("ul");
+    list.className = "resume-skills";
+    skills.forEach((skill) => {
+      const li = document.createElement("li");
+      li.textContent = skill;
+      list.appendChild(li);
+    });
+    skillsRoot.appendChild(list);
+    requireElement("resumeSkillsSection").hidden = !sectionEnabled("toggleSkills") || skills.length === 0;
+  }
 
-  const summaryHidden = requireElement("resumeSummarySection").hidden;
-  const experienceHidden = requireElement("resumeExperienceSection").hidden;
-  const educationHidden = requireElement("resumeEducationSection").hidden;
-  const skillsHidden = requireElement("resumeSkillsSection").hidden;
-  requireElement("resumePrimary").hidden = summaryHidden && experienceHidden;
-  requireElement("resumeSecondary").hidden = educationHidden && skillsHidden;
+  const achievementsRoot = requireElement("resumeAchievements");
+  achievementsRoot.replaceChildren();
+  achievements.forEach((line) => {
+    const item = document.createElement("li");
+    item.textContent = line;
+    achievementsRoot.appendChild(item);
+  });
+  requireElement("resumeAchievementsSection").hidden = !it || !sectionEnabled("toggleAchievements") || achievements.length === 0;
+
+  const certificatesRoot = requireElement("resumeCertificates");
+  certificatesRoot.replaceChildren();
+  certificates.forEach((item) => {
+    const block = document.createElement("article");
+    block.className = "cert-item";
+    const line = document.createElement("div");
+    line.className = "role-line";
+    const heading = document.createElement("strong");
+    heading.className = "role-title";
+    heading.textContent = [item.name, item.issuer].filter(Boolean).join(" | ");
+    line.appendChild(heading);
+    if (item.date) {
+      const date = document.createElement("span");
+      date.className = "role-dates";
+      date.textContent = item.date;
+      line.appendChild(date);
+    }
+    block.appendChild(line);
+    certificatesRoot.appendChild(block);
+  });
+  requireElement("resumeCertificatesSection").hidden = !it || !sectionEnabled("toggleCertificates") || certificates.length === 0;
 
   if (currentMode === "resume") {
     document.title = `${name} — Resume`;
   }
 }
 
+function selectAccent(choice) {
+  const accent = accentColors[choice.dataset.accent] ? choice.dataset.accent : "blue";
+  document.querySelectorAll("#accentRow .accent-swatch").forEach((button) => {
+    const active = button === choice;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+  });
+  resumePaper.dataset.accent = accent;
+}
+
 function selectFormat(choice) {
-  const format = choice.dataset.format || "classic";
+  const format = choice.dataset.format || "it";
   document.querySelectorAll("#resumeFormats .template-choice").forEach((button) => {
     const active = button === choice;
     button.classList.toggle("active", active);
@@ -394,6 +599,10 @@ document.querySelectorAll("#resumeFormats .template-choice").forEach((button) =>
   button.addEventListener("click", () => selectFormat(button));
 });
 
+document.querySelectorAll("#accentRow .accent-swatch").forEach((button) => {
+  button.addEventListener("click", () => selectAccent(button));
+});
+
 biodataTab.addEventListener("click", () => setMode("biodata"));
 resumeTab.addEventListener("click", () => setMode("resume"));
 
@@ -405,6 +614,18 @@ requireElement("addExperience").addEventListener("click", () => {
 
 requireElement("addEducation").addEventListener("click", () => {
   educationList.appendChild(createEntry("education", {}));
+  refreshIcons();
+  renderResume();
+});
+
+requireElement("addSkillGroup").addEventListener("click", () => {
+  skillGroupList.appendChild(createEntry("skill", {}));
+  refreshIcons();
+  renderResume();
+});
+
+requireElement("addCertificate").addEventListener("click", () => {
+  certificateList.appendChild(createEntry("certificate", {}));
   refreshIcons();
   renderResume();
 });
@@ -579,10 +800,15 @@ function resetResume() {
   resumeForm.reset();
   fillEntries(experienceList, "experience", starterExperience);
   fillEntries(educationList, "education", starterEducation);
-  const classic = document.querySelector('#resumeFormats .template-choice[data-format="classic"]');
-  if (classic) selectFormat(classic);
+  fillEntries(skillGroupList, "skill", []);
+  fillEntries(certificateList, "certificate", []);
+  const blue = document.querySelector('#accentRow .accent-swatch[data-accent="blue"]');
+  if (blue) selectAccent(blue);
+  else resumePaper.dataset.accent = "blue";
+  const itFormat = document.querySelector('#resumeFormats .template-choice[data-format="it"]');
+  if (itFormat) selectFormat(itFormat);
   else {
-    resumePaper.dataset.format = "classic";
+    resumePaper.dataset.format = "it";
     renderResume();
   }
   showToast("Resume reset.");
