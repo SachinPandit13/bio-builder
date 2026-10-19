@@ -612,9 +612,9 @@ renderResume();
 setMode("biodata");
 refreshIcons();
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", refreshIcons);
-} else {
-  refreshIcons();
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
 }
 window.addEventListener("load", refreshIcons);
