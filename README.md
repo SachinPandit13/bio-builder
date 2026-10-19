@@ -1,4 +1,4 @@
-# Vivah — Biodata and Resume Studio
+# BioCraft
 
 A responsive HTML, CSS and vanilla JavaScript studio for marriage biodata and professional resumes. Each studio has a live preview, several layouts, and PDF or print export.
 
