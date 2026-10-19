@@ -19,19 +19,35 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem("vivah_app_state_v1");
+          if (!raw) return;
+          var s = JSON.parse(raw);
+          if (!s) return;
+          if (s.mode === "resume") {
+            document.documentElement.classList.add("mode-resume-init");
+          }
+          if (s.biodata && s.biodata.template) {
+            document.documentElement.setAttribute("data-init-template", s.biodata.template);
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <script
+      defer
+      src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.js"
+      integrity="sha384-gYH+krreiYS66hNL8Tjjis9fmOhUYyqhUHwHZ+Tx9saIWRzy4xeZUpLQJmVmEUMM"
+      crossorigin="anonymous"
+      onload="if(window.refreshIcons)refreshIcons()"
+    ></script>
     <script
       defer
       src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"
       integrity="sha384-aBc0BOllaGWrQx51DYt978St/L7B+21jzNGc4N/jnGD0NxGwj8S/ftRgW0AkXIak"
       crossorigin="anonymous"
     ></script>
-    <script
-      defer
-      src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.js"
-      integrity="sha384-gYH+krreiYS66hNL8Tjjis9fmOhUYyqhUHwHZ+Tx9saIWRzy4xeZUpLQJmVmEUMM"
-      crossorigin="anonymous"
-    ></script>
-    <script defer src="app.js"></script>
   </head>
   <body>
     <header class="topbar">
@@ -836,5 +852,6 @@ Product manager with 8 years of experience turning customer problems into shippe
       </footer>
     </main>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js"></script>
   </body>
 </html>
