@@ -22,6 +22,9 @@ html {
 
 body {
     margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     background: var(--bg);
     color: var(--ink);
     font-family: var(--sans);
@@ -67,13 +70,18 @@ button {
 .brand-mark {
     display: grid;
     place-items: center;
-    width: 2.375rem;
-    height: 2.375rem;
-    background: #8b2e42;
-    color: #fff6e6;
-    border-radius: 0.75rem;
-    font-family: serif;
-    font-size: 1.4375rem
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.85rem;
+    overflow: hidden;
+    flex: none
+}
+
+.brand-mark img {
+    width: 128%;
+    height: 128%;
+    object-fit: cover;
+    object-position: center 42%
 }
 
 .brand strong {
@@ -83,10 +91,23 @@ button {
     line-height: 1.05
 }
 
+.brand-bio {
+    color: var(--wine)
+}
+
+.brand-craft {
+    background: linear-gradient(180deg, #f8e7b8 0%, #e4c36a 32%, #c69a50 58%, #8d6424 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent
+}
+
 .brand small {
     display: block;
-    font-size: 0.5625rem;
-    letter-spacing: 0.125rem;
+    max-width: 12rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.01em;
+    line-height: 1.3;
     color: #9d8990;
     margin-top: 0.25rem
 }
@@ -158,8 +179,12 @@ button {
 
 .app-shell {
     max-width: 93.75rem;
+    width: 100%;
     margin: auto;
-    padding: 1.5rem calc(1rem + env(safe-area-inset-right)) calc(1.5rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left))
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem calc(1rem + env(safe-area-inset-right)) 0 calc(1rem + env(safe-area-inset-left))
 }
 
 .intro {
@@ -378,23 +403,28 @@ html.mode-resume-init #resumeTab {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 0.625rem;
-    padding: 1.5rem 0 0.625rem;
-    color: #928891;
-    font-size: 0.6875rem;
+    gap: 0.75rem 1.5rem;
+    margin-top: auto;
+    background: #fff;
+    border-top: 1px solid #eee9ec;
+    padding: 1rem calc(1rem + env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left));
+    color: #928891
 }
 
-.site-footer span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3125rem;
+.footer-brand {
+    min-width: 0
 }
 
-.site-footer svg,
-.site-footer [data-lucide] {
-    width: 0.8125rem;
-    height: 0.8125rem;
-    color: var(--gold);
+.footer-brand .brand-mark {
+    width: 2.5rem;
+    height: 2.5rem
+}
+
+.footer-note {
+    margin: 0;
+    max-width: 18rem;
+    font-size: 0.75rem;
+    line-height: 1.5
 }
 
 .field-grid {
@@ -913,21 +943,6 @@ html.mode-resume-init #resumeTab {
     padding: 0.8125rem 0.1875rem 0;
     color: #8b838b;
     font-size: 0.625rem
-}
-
-.site-footer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.625rem;
-    color: #a198a0;
-    font-size: 0.625rem;
-    padding: 1.4375rem 0.1875rem 0
-}
-
-.site-footer span:first-child {
-    font-weight: 700;
-    color: #88717b
 }
 
 .toast {
