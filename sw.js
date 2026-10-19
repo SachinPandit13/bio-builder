@@ -1,4 +1,4 @@
-const CACHE = "vivah-v2";
+const CACHE = "vivah-v3";
 const FILES = [
   "./index.html",
   "./styles.css",
