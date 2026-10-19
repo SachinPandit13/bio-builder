@@ -1,250 +1,688 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#7c2435" />
-  <title>Vivah — Marriage Biodata Builder</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Serif+Devanagari:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"></script>
-  <script defer src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-  <script defer src="app.js"></script>
-</head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Vivah home">
-      <span class="brand-mark">वि</span>
-      <span><strong>Vivah</strong><small>BIODATA STUDIO</small></span>
-    </a>
-    <div class="studio-tabs" role="tablist" aria-label="Choose a studio">
-      <button class="studio-tab" id="biodataTab" type="button" role="tab" aria-selected="true" aria-controls="biodataStudio">Biodata</button>
-      <button class="studio-tab" id="resumeTab" type="button" role="tab" aria-selected="false" aria-controls="resumeStudio" tabindex="-1">Resume</button>
-    </div>
-    <div class="topbar-actions">
-      <span class="save-note"><span class="save-dot"></span> Live preview enabled</span>
-      <button class="btn btn-quiet" id="resetBtn" type="button"><i data-lucide="rotate-ccw"></i> Reset form</button>
-      <button class="btn btn-primary" id="downloadTop" type="button"><i data-lucide="download"></i> Download PDF</button>
-    </div>
-  </header>
-
-  <main class="app-shell">
-    <section class="intro">
-      <div class="intro-content">
-        <p class="eyebrow" id="introEyebrow">A thoughtful first impression</p>
-        <div class="intro-heading-row">
-          <h1 id="introTitle">Your story, beautifully arranged.</h1>
-          <p class="intro-copy" id="introCopy">Create a polished marriage biodata in minutes. Add your details, choose a design, and export a print-ready PDF.</p>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#8b2e42" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Vivah" />
+    <title>Vivah - Marriage Biodata Builder</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Noto+Serif+Devanagari:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js"
+      integrity="sha384-aBc0BOllaGWrQx51DYt978St/L7B+21jzNGc4N/jnGD0NxGwj8S/ftRgW0AkXIak"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      defer
+      src="https://unpkg.com/lucide@0.544.0/dist/umd/lucide.js"
+      integrity="sha384-gYH+krreiYS66hNL8Tjjis9fmOhUYyqhUHwHZ+Tx9saIWRzy4xeZUpLQJmVmEUMM"
+      crossorigin="anonymous"
+    ></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Vivah home">
+        <span class="brand-mark">वि</span>
+        <span><strong>Vivah</strong><small>BIODATA STUDIO</small></span>
+      </a>
+      <div class="studio-tabs" role="tablist" aria-label="Choose a studio">
+        <button
+          class="studio-tab"
+          id="biodataTab"
+          type="button"
+          role="tab"
+          aria-selected="true"
+          aria-controls="biodataStudio"
+        >
+          Biodata
+        </button>
+        <button
+          class="studio-tab"
+          id="resumeTab"
+          type="button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="resumeStudio"
+          tabindex="-1"
+        >
+          Resume
+        </button>
       </div>
-      <div class="intro-badge"><i data-lucide="sparkles"></i><div><strong>Made for A4</strong><small>Print-ready layouts</small></div></div>
-    </section>
+      <div class="topbar-actions">
+        <span class="save-note"
+          ><span class="save-dot"></span> Live preview enabled</span
+        >
+        <button class="btn btn-quiet" id="resetBtn" type="button">
+          <i data-lucide="rotate-ccw"></i> Reset form
+        </button>
+        <button class="btn btn-primary" id="downloadTop" type="button">
+          <i data-lucide="download"></i> Download PDF
+        </button>
+      </div>
+    </header>
 
-    <div class="workspace" id="biodataStudio" role="tabpanel" aria-labelledby="biodataTab">
-      <aside class="editor-panel">
-        <div class="panel-heading">
-          <div><p class="eyebrow">Step 01</p><h2>Your details</h2></div>
-          <span class="step-count">EDIT</span>
-        </div>
-        <form id="biodataForm">
-          <section class="form-section">
-            <h3><span class="section-icon"><i data-lucide="user"></i></span> Personal information</h3>
-            <div class="field-grid">
-              <label class="field full"><span>Full name</span><input name="fullName" value="Rohit Mahesh Patil" placeholder="e.g. Rohit Mahesh Patil" /></label>
-              <label class="field"><span>Date of birth</span><input name="dob" value="12/04/1994" placeholder="DD/MM/YYYY" /></label>
-              <label class="field"><span>Birth time</span><input name="birthTime" value="5:09 PM" placeholder="e.g. 5:09 PM" /></label>
-              <label class="field"><span>Birth place</span><input name="birthPlace" value="Kolhapur, Maharashtra" placeholder="City, State" /></label>
-              <label class="field"><span>Height</span><input name="height" value="5'8&quot;" placeholder="e.g. 5 ft 8 in" /></label>
-              <label class="field"><span>Religion</span><input name="religion" value="Hindu" placeholder="Religion" /></label>
-              <label class="field"><span>Caste / community</span><input name="community" value="Maratha" placeholder="Community" /></label>
-              <label class="field"><span>Gotra</span><input name="gotra" value="Kashyap" placeholder="Gotra" /></label>
-              <label class="field"><span>Rashi</span><input name="rashi" value="Kanya" placeholder="Rashi" /></label>
-              <label class="field"><span>Manglik status</span><input name="manglik" value="No" placeholder="Yes / No" /></label>
-              <label class="field"><span>Complexion</span><input name="complexion" value="Wheatish" placeholder="Optional" /></label>
-              <label class="field"><span>Blood group</span><input name="bloodGroup" value="O+" placeholder="Optional" /></label>
-              <label class="field full"><span>Education</span><input name="education" value="B.E. (Civil Engineering)" placeholder="Highest qualification" /></label>
-              <label class="field full"><span>Occupation</span><input name="occupation" value="Site Engineer" placeholder="Role / profession" /></label>
-            </div>
-          </section>
-
-          <section class="form-section">
-            <h3><span class="section-icon"><i data-lucide="users"></i></span> Family information</h3>
-            <div class="field-grid">
-              <label class="field full"><span>Father's name</span><input name="fatherName" value="Mahesh Shivaji Patil" placeholder="Father's full name" /></label>
-              <label class="field full"><span>Father's occupation</span><input name="fatherOccupation" value="Agriculture" placeholder="Occupation" /></label>
-              <label class="field full"><span>Mother's name</span><input name="motherName" value="Savita Mahesh Patil" placeholder="Mother's full name" /></label>
-              <label class="field full"><span>Mother's occupation</span><input name="motherOccupation" value="Homemaker" placeholder="Occupation" /></label>
-              <label class="field"><span>Brothers</span><input name="brothers" value="1 (Elder, married)" placeholder="Number / details" /></label>
-              <label class="field"><span>Sisters</span><input name="sisters" value="None" placeholder="Number / details" /></label>
-              <label class="field full"><span>Maternal uncle</span><input name="maternalUncle" value="Sanjay Deshmukh, Sangli" placeholder="Name / place" /></label>
-              <label class="field full"><span>Relatives</span><input name="relatives" value="Patil, Deshmukh, Jadhav" placeholder="Family / relatives" /></label>
-            </div>
-          </section>
-
-          <section class="form-section">
-            <h3><span class="section-icon"><i data-lucide="phone"></i></span> Contact information</h3>
-            <div class="field-grid">
-              <label class="field full"><span>Mobile number</span><input name="mobile" value="+91 98765 43210" placeholder="+91 ..." /></label>
-              <label class="field full"><span>Address</span><textarea name="address" rows="2" placeholder="Full address">Shahupuri, Kolhapur - 416001</textarea></label>
-            </div>
-          </section>
-
-          <section class="form-section">
-            <h3><span class="section-icon"><i data-lucide="image"></i></span> Profile photo</h3>
-            <label class="photo-toggle">
-              <input id="photoToggle" type="checkbox" />
-              <span class="photo-switch" aria-hidden="true"></span>
-              <span class="photo-toggle-copy"><strong>Show photo on biodata</strong><small>Turn this on to place the portrait on the design.</small></span>
-            </label>
-            <div class="photo-upload">
-              <div class="upload-preview" id="uploadPreview"><span>RP</span></div>
-              <div class="upload-copy"><strong>Add a portrait</strong><small>Use a clear, vertical photo for the best result.</small><label class="btn btn-outline upload-button" for="photoInput"><i data-lucide="upload"></i> Choose photo</label><input id="photoInput" type="file" accept="image/*" hidden /></div>
-            </div>
-          </section>
-        </form>
-      </aside>
-
-      <section class="preview-panel">
-        <div class="preview-toolbar">
-          <div><p class="eyebrow">Step 02</p><h2>Choose your design</h2></div>
-          <div class="preview-actions">
-            <button class="btn btn-outline" id="printBtn" type="button"><i data-lucide="printer"></i> Print / Save PDF</button>
-            <button class="btn btn-primary" id="downloadBtn" type="button"><i data-lucide="download"></i> Download PDF</button>
+    <main class="app-shell">
+      <section class="intro">
+        <div class="intro-content">
+          <p class="eyebrow" id="introEyebrow">A thoughtful first impression</p>
+          <div class="intro-heading-row">
+            <h1 id="introTitle">Your story, beautifully arranged.</h1>
+            <p class="intro-copy" id="introCopy">
+              Create a polished marriage biodata in minutes. Add your details,
+              choose a design, and export a print-ready PDF.
+            </p>
           </div>
         </div>
-        <div class="template-strip" id="templateStrip" aria-label="Choose a template">
-          <button class="template-choice active" data-template="floral" type="button"><span class="template-swatch swatch-floral"><i data-lucide="flower-2"></i></span><span>Abstract Flower</span></button>
-          <button class="template-choice" data-template="classic" type="button"><span class="template-swatch swatch-classic">ॐ</span><span>Classic Red</span></button>
-          <button class="template-choice" data-template="royal" type="button"><span class="template-swatch swatch-royal"><i data-lucide="crown"></i></span><span>Royal Gold</span></button>
-          <button class="template-choice" data-template="minimal" type="button"><span class="template-swatch swatch-minimal"><i data-lucide="minus"></i></span><span>Minimal Ivory</span></button>
-          <button class="template-choice" data-template="botanical" type="button"><span class="template-swatch swatch-botanical"><i data-lucide="leaf"></i></span><span>Botanical</span></button>
-          <button class="template-choice" data-template="blush" type="button"><span class="template-swatch swatch-blush"><i data-lucide="heart"></i></span><span>Blush Bloom</span></button>
-          <button class="template-choice" data-template="maroon" type="button"><span class="template-swatch swatch-maroon"><i data-lucide="sparkles"></i></span><span>Maroon Heritage</span></button>
-        </div>
-        <div class="paper-stage">
-          <div class="paper" id="biodataPaper" data-template="floral">
-            <div class="paper-border"></div>
-            <div class="ornament ornament-tl">❧<span>✿</span></div><div class="ornament ornament-tr">❧<span>✿</span></div>
-            <div class="ornament ornament-bl">❧<span>✿</span></div><div class="ornament ornament-br">❧<span>✿</span></div>
-            <header class="paper-header">
-              <div class="ganesh" id="symbolMark">ॐ</div>
-              <div><h2 id="paperTitle">Marriage Biodata</h2><p id="paperBlessing">॥ श्री गणेशाय नमः ॥</p></div>
-              <div class="header-flourish">✦</div>
-            </header>
-            <div class="paper-content">
-              <div class="paper-main">
-                <section class="paper-section">
-                  <h3>Personal Details</h3>
-                  <div class="detail-list" id="personalDetails"></div>
-                </section>
-                <section class="paper-section">
-                  <h3>Family Details</h3>
-                  <div class="detail-list" id="familyDetails"></div>
-                </section>
-                <section class="paper-section contact-section">
-                  <h3>Contact Details</h3>
-                  <div class="detail-list" id="contactDetails"></div>
-                </section>
-              </div>
-              <div class="portrait-frame"><img id="portrait" alt="Profile portrait" /><div id="portraitPlaceholder">Your<br/>photo</div></div>
-            </div>
-            <footer class="paper-footer"><span>✦</span><span id="footerName">Rohit Mahesh Patil</span><span>✦</span></footer>
+        <div class="intro-badge">
+          <i data-lucide="sparkles"></i>
+          <div>
+            <strong>Made for A4</strong><small>Print-ready layouts</small>
           </div>
         </div>
-        <div class="preview-footer"><span><span class="status-dot"></span> Preview updates as you type</span><span>A4 portrait · PDF-ready</span></div>
       </section>
-    </div>
 
-    <div class="workspace" id="resumeStudio" role="tabpanel" aria-labelledby="resumeTab" hidden>
-      <aside class="editor-panel">
-        <div class="panel-heading">
-          <div><p class="eyebrow">Step 01</p><h2>Your experience</h2></div>
-          <span class="step-count">EDIT</span>
-        </div>
-        <form id="resumeForm">
-          <section class="form-section">
-            <h3><span class="section-icon"><i data-lucide="user-round"></i></span> Header</h3>
-            <div class="field-grid">
-              <label class="field full"><span>Full name</span><input name="resumeName" value="Aarav Mehta" placeholder="e.g. Aarav Mehta" /></label>
-              <label class="field full"><span>Job title</span><input name="jobTitle" value="Senior Product Manager" placeholder="e.g. Senior Product Manager" /></label>
-              <label class="field"><span>Email</span><input name="email" value="aarav.mehta@email.com" placeholder="name@email.com" /></label>
-              <label class="field"><span>Phone</span><input name="phone" value="+91 98450 22110" placeholder="+91 ..." /></label>
-              <label class="field"><span>City</span><input name="city" value="Pune, India" placeholder="City, Country" /></label>
-              <label class="field"><span>Website or LinkedIn</span><input name="website" value="linkedin.com/in/aaravmehta" placeholder="linkedin.com/in/..." /></label>
+      <div
+        class="workspace"
+        id="biodataStudio"
+        role="tabpanel"
+        aria-labelledby="biodataTab"
+      >
+        <aside class="editor-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Step 01</p>
+              <h2>Your details</h2>
             </div>
-          </section>
-          <section class="form-section">
-            <h3><span class="section-icon"><i data-lucide="file-text"></i></span> Summary</h3>
-            <label class="field"><span>Professional summary</span><textarea name="summary" rows="4" placeholder="A short introduction">Product manager with 8 years of experience turning customer problems into shipped products. Led cross-functional teams across payments and growth, with a record of launching features that improved activation and retention.</textarea></label>
-          </section>
-          <section class="form-section">
-            <h3><span class="section-icon"><i data-lucide="briefcase"></i></span> Experience</h3>
-            <div id="experienceList" class="entry-list"></div>
-            <button class="btn btn-outline add-entry" id="addExperience" type="button"><i data-lucide="plus"></i> Add role</button>
-          </section>
-          <section class="form-section">
-            <h3><span class="section-icon"><i data-lucide="graduation-cap"></i></span> Education</h3>
-            <div id="educationList" class="entry-list"></div>
-            <button class="btn btn-outline add-entry" id="addEducation" type="button"><i data-lucide="plus"></i> Add education</button>
-          </section>
-          <section class="form-section">
-            <h3><span class="section-icon"><i data-lucide="wrench"></i></span> Skills</h3>
-            <label class="field"><span>Skills, separated by commas</span><input name="skills" value="Product strategy, Roadmapping, Experimentation, SQL, Stakeholder management, Figma" placeholder="Skill, Skill, Skill" /></label>
-          </section>
-        </form>
-      </aside>
-      <section class="preview-panel">
-        <div class="preview-toolbar">
-          <div><p class="eyebrow">Step 02</p><h2>Choose a format</h2></div>
-          <div class="preview-actions">
-            <button class="btn btn-outline" id="printBtnResume" type="button"><i data-lucide="printer"></i> Print / Save PDF</button>
-            <button class="btn btn-primary" id="downloadBtnResume" type="button"><i data-lucide="download"></i> Download PDF</button>
+            <span class="step-count">EDIT</span>
           </div>
-        </div>
-        <div class="template-strip" id="resumeFormats" aria-label="Choose a resume format">
-          <button class="template-choice active" data-format="classic" type="button"><span class="template-swatch swatch-format-classic">Aa</span><span>Classic</span></button>
-          <button class="template-choice" data-format="modern" type="button"><span class="template-swatch swatch-format-modern"><i data-lucide="layout-list"></i></span><span>Modern</span></button>
-          <button class="template-choice" data-format="compact" type="button"><span class="template-swatch swatch-format-compact"><i data-lucide="rows-3"></i></span><span>Compact</span></button>
-          <button class="template-choice" data-format="executive" type="button"><span class="template-swatch swatch-format-executive"><i data-lucide="diamond"></i></span><span>Executive</span></button>
-        </div>
-        <div class="paper-stage">
-          <article class="resume-sheet" id="resumePaper" data-format="classic">
-            <header class="resume-header">
-              <h2 class="resume-name" id="resumeName">Aarav Mehta</h2>
-              <p class="resume-role" id="resumeRole">Senior Product Manager</p>
-              <p class="resume-contact" id="resumeContact"></p>
-            </header>
-            <div class="resume-body">
-              <div class="resume-primary" id="resumePrimary">
-              <section class="resume-block" id="resumeSummarySection">
-                <h3>Summary</h3>
-                <p class="resume-summary" id="resumeSummary"></p>
-              </section>
-              <section class="resume-block" id="resumeExperienceSection">
-                <h3>Experience</h3>
-                <div id="resumeExperience"></div>
-              </section>
+          <form id="biodataForm">
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"><i data-lucide="user"></i></span>
+                Personal information
+              </h3>
+              <div class="field-grid">
+                <label class="field full"
+                  ><span>Full name</span
+                  ><input
+                    name="fullName"
+                    value="Rohit Mahesh Patil"
+                    placeholder="e.g. Rohit Mahesh Patil"
+                /></label>
+                <label class="field"
+                  ><span>Date of birth</span
+                  ><input
+                    name="dob"
+                    value="12/04/1994"
+                    placeholder="DD/MM/YYYY"
+                /></label>
+                <label class="field"
+                  ><span>Birth time</span
+                  ><input
+                    name="birthTime"
+                    value="5:09 PM"
+                    placeholder="e.g. 5:09 PM"
+                /></label>
+                <label class="field"
+                  ><span>Birth place</span
+                  ><input
+                    name="birthPlace"
+                    value="Kolhapur, Maharashtra"
+                    placeholder="City, State"
+                /></label>
+                <label class="field"
+                  ><span>Height</span
+                  ><input
+                    name="height"
+                    value="5'8&quot;"
+                    placeholder="e.g. 5 ft 8 in"
+                /></label>
+                <label class="field"
+                  ><span>Religion</span
+                  ><input name="religion" value="Hindu" placeholder="Religion"
+                /></label>
+                <label class="field"
+                  ><span>Caste / community</span
+                  ><input
+                    name="community"
+                    value="Maratha"
+                    placeholder="Community"
+                /></label>
+                <label class="field"
+                  ><span>Gotra</span
+                  ><input name="gotra" value="Kashyap" placeholder="Gotra"
+                /></label>
+                <label class="field"
+                  ><span>Rashi</span
+                  ><input name="rashi" value="Kanya" placeholder="Rashi"
+                /></label>
+                <label class="field"
+                  ><span>Manglik status</span
+                  ><input name="manglik" value="No" placeholder="Yes / No"
+                /></label>
+                <label class="field"
+                  ><span>Complexion</span
+                  ><input
+                    name="complexion"
+                    value="Wheatish"
+                    placeholder="Optional"
+                /></label>
+                <label class="field"
+                  ><span>Blood group</span
+                  ><input name="bloodGroup" value="O+" placeholder="Optional"
+                /></label>
+                <label class="field full"
+                  ><span>Education</span
+                  ><input
+                    name="education"
+                    value="B.E. (Civil Engineering)"
+                    placeholder="Highest qualification"
+                /></label>
+                <label class="field full"
+                  ><span>Occupation</span
+                  ><input
+                    name="occupation"
+                    value="Site Engineer"
+                    placeholder="Role / profession"
+                /></label>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"><i data-lucide="users"></i></span>
+                Family information
+              </h3>
+              <div class="field-grid">
+                <label class="field full"
+                  ><span>Father's name</span
+                  ><input
+                    name="fatherName"
+                    value="Mahesh Shivaji Patil"
+                    placeholder="Father's full name"
+                /></label>
+                <label class="field full"
+                  ><span>Father's occupation</span
+                  ><input
+                    name="fatherOccupation"
+                    value="Agriculture"
+                    placeholder="Occupation"
+                /></label>
+                <label class="field full"
+                  ><span>Mother's name</span
+                  ><input
+                    name="motherName"
+                    value="Savita Mahesh Patil"
+                    placeholder="Mother's full name"
+                /></label>
+                <label class="field full"
+                  ><span>Mother's occupation</span
+                  ><input
+                    name="motherOccupation"
+                    value="Homemaker"
+                    placeholder="Occupation"
+                /></label>
+                <label class="field"
+                  ><span>Brothers</span
+                  ><input
+                    name="brothers"
+                    value="1 (Elder, married)"
+                    placeholder="Number / details"
+                /></label>
+                <label class="field"
+                  ><span>Sisters</span
+                  ><input
+                    name="sisters"
+                    value="None"
+                    placeholder="Number / details"
+                /></label>
+                <label class="field full"
+                  ><span>Maternal uncle</span
+                  ><input
+                    name="maternalUncle"
+                    value="Sanjay Deshmukh, Sangli"
+                    placeholder="Name / place"
+                /></label>
+                <label class="field full"
+                  ><span>Relatives</span
+                  ><input
+                    name="relatives"
+                    value="Patil, Deshmukh, Jadhav"
+                    placeholder="Family / relatives"
+                /></label>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"><i data-lucide="phone"></i></span>
+                Contact information
+              </h3>
+              <div class="field-grid">
+                <label class="field full"
+                  ><span>Mobile number</span
+                  ><input
+                    name="mobile"
+                    value="+91 98765 43210"
+                    placeholder="+91 ..."
+                /></label>
+                <label class="field full"
+                  ><span>Address</span
+                  ><textarea name="address" rows="2" placeholder="Full address">
+Shahupuri, Kolhapur - 416001</textarea
+                  >
+                </label>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"><i data-lucide="image"></i></span>
+                Profile photo
+              </h3>
+              <label class="photo-toggle">
+                <input id="photoToggle" type="checkbox" />
+                <span class="photo-switch" aria-hidden="true"></span>
+                <span class="photo-toggle-copy"
+                  ><strong>Show photo on biodata</strong
+                  ><small
+                    >Turn this on to place the portrait on the design.</small
+                  ></span
+                >
+              </label>
+              <div class="photo-upload">
+                <div class="upload-preview" id="uploadPreview">
+                  <span>RP</span>
+                </div>
+                <div class="upload-copy">
+                  <strong>Add a portrait</strong
+                  ><small
+                    >Use a clear, vertical photo for the best result.</small
+                  ><label class="btn btn-outline upload-button" for="photoInput"
+                    ><i data-lucide="upload"></i> Choose photo</label
+                  ><input id="photoInput" type="file" accept="image/*" hidden />
+                </div>
+              </div>
+            </section>
+          </form>
+        </aside>
+
+        <section class="preview-panel">
+          <div class="preview-toolbar">
+            <div>
+              <p class="eyebrow">Step 02</p>
+              <h2>Choose your design</h2>
             </div>
-            <div class="resume-secondary" id="resumeSecondary">
-              <section class="resume-block" id="resumeEducationSection">
-                <h3>Education</h3>
-                <div id="resumeEducation"></div>
-              </section>
-              <section class="resume-block" id="resumeSkillsSection">
-                <h3>Skills</h3>
-                <ul class="resume-skills" id="resumeSkills"></ul>
-              </section>
+            <div class="preview-actions">
+              <button class="btn btn-outline" id="printBtn" type="button">
+                <i data-lucide="printer"></i> Print / Save PDF
+              </button>
+              <button class="btn btn-primary" id="downloadBtn" type="button">
+                <i data-lucide="download"></i> Download PDF
+              </button>
             </div>
           </div>
-        </article>
+          <div
+            class="template-strip"
+            id="templateStrip"
+            aria-label="Choose a template"
+          >
+            <button
+              class="template-choice active"
+              data-template="floral"
+              type="button"
+            >
+              <span class="template-swatch swatch-floral"
+                ><i data-lucide="flower-2"></i></span
+              ><span>Abstract Flower</span>
+            </button>
+            <button
+              class="template-choice"
+              data-template="classic"
+              type="button"
+            >
+              <span class="template-swatch swatch-classic">ॐ</span
+              ><span>Classic Red</span>
+            </button>
+            <button class="template-choice" data-template="royal" type="button">
+              <span class="template-swatch swatch-royal"
+                ><i data-lucide="crown"></i></span
+              ><span>Royal Gold</span>
+            </button>
+            <button
+              class="template-choice"
+              data-template="minimal"
+              type="button"
+            >
+              <span class="template-swatch swatch-minimal"
+                ><i data-lucide="minus"></i></span
+              ><span>Minimal Ivory</span>
+            </button>
+            <button
+              class="template-choice"
+              data-template="botanical"
+              type="button"
+            >
+              <span class="template-swatch swatch-botanical"
+                ><i data-lucide="leaf"></i></span
+              ><span>Botanical</span>
+            </button>
+            <button class="template-choice" data-template="blush" type="button">
+              <span class="template-swatch swatch-blush"
+                ><i data-lucide="heart"></i></span
+              ><span>Blush Bloom</span>
+            </button>
+            <button
+              class="template-choice"
+              data-template="maroon"
+              type="button"
+            >
+              <span class="template-swatch swatch-maroon"
+                ><i data-lucide="sparkles"></i></span
+              ><span>Maroon Heritage</span>
+            </button>
+          </div>
+          <div class="paper-stage">
+            <div class="paper" id="biodataPaper" data-template="floral">
+              <div class="paper-border"></div>
+              <div class="ornament ornament-tl">❧<span>✿</span></div>
+              <div class="ornament ornament-tr">❧<span>✿</span></div>
+              <div class="ornament ornament-bl">❧<span>✿</span></div>
+              <div class="ornament ornament-br">❧<span>✿</span></div>
+              <header class="paper-header">
+                <div class="ganesh" id="symbolMark">ॐ</div>
+                <div>
+                  <h2 id="paperTitle">Marriage Biodata</h2>
+                  <p id="paperBlessing">॥ श्री गणेशाय नमः ॥</p>
+                </div>
+                <div class="header-flourish">✦</div>
+              </header>
+              <div class="paper-content">
+                <div class="paper-main">
+                  <section class="paper-section">
+                    <h3>Personal Details</h3>
+                    <div class="detail-list" id="personalDetails"></div>
+                  </section>
+                  <section class="paper-section">
+                    <h3>Family Details</h3>
+                    <div class="detail-list" id="familyDetails"></div>
+                  </section>
+                  <section class="paper-section contact-section">
+                    <h3>Contact Details</h3>
+                    <div class="detail-list" id="contactDetails"></div>
+                  </section>
+                </div>
+                <div class="portrait-frame">
+                  <img id="portrait" alt="Profile portrait" />
+                  <div id="portraitPlaceholder">Your<br />photo</div>
+                </div>
+              </div>
+              <footer class="paper-footer">
+                <span>✦</span><span id="footerName">Rohit Mahesh Patil</span
+                ><span>✦</span>
+              </footer>
+            </div>
+          </div>
+          <div class="preview-footer">
+            <span
+              ><span class="status-dot"></span> Preview updates as you
+              type</span
+            ><span>A4 portrait · PDF-ready</span>
+          </div>
+        </section>
       </div>
-      <div class="preview-footer"><span><span class="status-dot"></span> Preview updates as you type</span><span>A4 portrait · PDF-ready</span></div>
-    </section>
-  </div>
-  <footer class="site-footer"><span><i data-lucide="sparkles" class="footer-icon"></i> Vivah Biodata Studio</span><span>Your details stay in this browser session.</span></footer>
-  </main>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-</body>
+
+      <div
+        class="workspace"
+        id="resumeStudio"
+        role="tabpanel"
+        aria-labelledby="resumeTab"
+        hidden
+      >
+        <aside class="editor-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Step 01</p>
+              <h2>Your experience</h2>
+            </div>
+            <span class="step-count">EDIT</span>
+          </div>
+          <form id="resumeForm">
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"
+                  ><i data-lucide="user-round"></i
+                ></span>
+                Header
+              </h3>
+              <div class="field-grid">
+                <label class="field full"
+                  ><span>Full name</span
+                  ><input
+                    name="resumeName"
+                    value="Aarav Mehta"
+                    placeholder="e.g. Aarav Mehta"
+                /></label>
+                <label class="field full"
+                  ><span>Job title</span
+                  ><input
+                    name="jobTitle"
+                    value="Senior Product Manager"
+                    placeholder="e.g. Senior Product Manager"
+                /></label>
+                <label class="field"
+                  ><span>Email</span
+                  ><input
+                    name="email"
+                    value="aarav.mehta@email.com"
+                    placeholder="name@email.com"
+                /></label>
+                <label class="field"
+                  ><span>Phone</span
+                  ><input
+                    name="phone"
+                    value="+91 98450 22110"
+                    placeholder="+91 ..."
+                /></label>
+                <label class="field"
+                  ><span>City</span
+                  ><input
+                    name="city"
+                    value="Pune, India"
+                    placeholder="City, Country"
+                /></label>
+                <label class="field"
+                  ><span>Website or LinkedIn</span
+                  ><input
+                    name="website"
+                    value="linkedin.com/in/aaravmehta"
+                    placeholder="linkedin.com/in/..."
+                /></label>
+              </div>
+            </section>
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"
+                  ><i data-lucide="file-text"></i
+                ></span>
+                Summary
+              </h3>
+              <label class="field"
+                ><span>Professional summary</span
+                ><textarea
+                  name="summary"
+                  rows="4"
+                  placeholder="A short introduction"
+                >
+Product manager with 8 years of experience turning customer problems into shipped products. Led cross-functional teams across payments and growth, with a record of launching features that improved activation and retention.</textarea
+                >
+              </label>
+            </section>
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"
+                  ><i data-lucide="briefcase"></i
+                ></span>
+                Experience
+              </h3>
+              <div id="experienceList" class="entry-list"></div>
+              <button
+                class="btn btn-outline add-entry"
+                id="addExperience"
+                type="button"
+              >
+                <i data-lucide="plus"></i> Add role
+              </button>
+            </section>
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"
+                  ><i data-lucide="graduation-cap"></i
+                ></span>
+                Education
+              </h3>
+              <div id="educationList" class="entry-list"></div>
+              <button
+                class="btn btn-outline add-entry"
+                id="addEducation"
+                type="button"
+              >
+                <i data-lucide="plus"></i> Add education
+              </button>
+            </section>
+            <section class="form-section">
+              <h3>
+                <span class="section-icon"><i data-lucide="wrench"></i></span>
+                Skills
+              </h3>
+              <label class="field"
+                ><span>Skills, separated by commas</span
+                ><input
+                  name="skills"
+                  value="Product strategy, Roadmapping, Experimentation, SQL, Stakeholder management, Figma"
+                  placeholder="Skill, Skill, Skill"
+              /></label>
+            </section>
+          </form>
+        </aside>
+        <section class="preview-panel">
+          <div class="preview-toolbar">
+            <div>
+              <p class="eyebrow">Step 02</p>
+              <h2>Choose a format</h2>
+            </div>
+            <div class="preview-actions">
+              <button class="btn btn-outline" id="printBtnResume" type="button">
+                <i data-lucide="printer"></i> Print / Save PDF
+              </button>
+              <button
+                class="btn btn-primary"
+                id="downloadBtnResume"
+                type="button"
+              >
+                <i data-lucide="download"></i> Download PDF
+              </button>
+            </div>
+          </div>
+          <div
+            class="template-strip"
+            id="resumeFormats"
+            aria-label="Choose a resume format"
+          >
+            <button
+              class="template-choice active"
+              data-format="classic"
+              type="button"
+            >
+              <span class="template-swatch swatch-format-classic">Aa</span
+              ><span>Classic</span>
+            </button>
+            <button class="template-choice" data-format="modern" type="button">
+              <span class="template-swatch swatch-format-modern"
+                ><i data-lucide="layout-list"></i></span
+              ><span>Modern</span>
+            </button>
+            <button class="template-choice" data-format="compact" type="button">
+              <span class="template-swatch swatch-format-compact"
+                ><i data-lucide="rows-3"></i></span
+              ><span>Compact</span>
+            </button>
+            <button
+              class="template-choice"
+              data-format="executive"
+              type="button"
+            >
+              <span class="template-swatch swatch-format-executive"
+                ><i data-lucide="diamond"></i></span
+              ><span>Executive</span>
+            </button>
+          </div>
+          <div class="paper-stage">
+            <article
+              class="resume-sheet"
+              id="resumePaper"
+              data-format="classic"
+            >
+              <header class="resume-header">
+                <h2 class="resume-name" id="resumeName">Aarav Mehta</h2>
+                <p class="resume-role" id="resumeRole">
+                  Senior Product Manager
+                </p>
+                <p class="resume-contact" id="resumeContact"></p>
+              </header>
+              <div class="resume-body">
+                <div class="resume-primary" id="resumePrimary">
+                  <section class="resume-block" id="resumeSummarySection">
+                    <h3>Summary</h3>
+                    <p class="resume-summary" id="resumeSummary"></p>
+                  </section>
+                  <section class="resume-block" id="resumeExperienceSection">
+                    <h3>Experience</h3>
+                    <div id="resumeExperience"></div>
+                  </section>
+                </div>
+                <div class="resume-secondary" id="resumeSecondary">
+                  <section class="resume-block" id="resumeEducationSection">
+                    <h3>Education</h3>
+                    <div id="resumeEducation"></div>
+                  </section>
+                  <section class="resume-block" id="resumeSkillsSection">
+                    <h3>Skills</h3>
+                    <ul class="resume-skills" id="resumeSkills"></ul>
+                  </section>
+                </div>
+              </div>
+            </article>
+          </div>
+          <div class="preview-footer">
+            <span
+              ><span class="status-dot"></span> Preview updates as you
+              type</span
+            ><span>A4 portrait · PDF-ready</span>
+          </div>
+        </section>
+      </div>
+      <footer class="site-footer">
+        <span
+          ><i data-lucide="sparkles" class="footer-icon"></i> Vivah Biodata
+          Studio</span
+        ><span>Your details stay in this browser session.</span>
+      </footer>
+    </main>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
 </html>
