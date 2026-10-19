@@ -160,6 +160,92 @@ function applyPhotoVisibility() {
   paper.classList.toggle("show-photo", photoToggle.checked);
 }
 
+const STORAGE_KEY = "vivah_app_state_v1";
+let isRestoring = false;
+let saveTimer = null;
+
+function serializeForm(formEl) {
+  const fields = {};
+  const elements = formEl.elements;
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i];
+    if (el.type === "file" || el.type === "submit" || el.type === "button") continue;
+    const key = el.name || el.id;
+    if (key) {
+      if (el.type === "checkbox") {
+        fields[key] = el.checked;
+      } else {
+        fields[key] = el.value;
+      }
+    }
+  }
+  return fields;
+}
+
+function deserializeForm(formEl, fields) {
+  if (!fields || typeof fields !== "object") return;
+  Object.entries(fields).forEach(([key, val]) => {
+    const el = formEl.elements.namedItem(key) || document.getElementById(key);
+    if (!el) return;
+    if (el.type === "checkbox") {
+      el.checked = Boolean(val);
+    } else {
+      el.value = val;
+    }
+  });
+}
+
+function saveState() {
+  if (isRestoring) return;
+  try {
+    const state = {
+      mode: currentMode,
+      biodata: {
+        fields: serializeForm(form),
+        template: paper.dataset.template || "floral",
+        showPhoto: photoToggle.checked,
+        portraitData: portrait.getAttribute("src") || ""
+      },
+      resume: {
+        fields: serializeForm(resumeForm),
+        format: resumePaper.dataset.format || "it",
+        accent: resumePaper.dataset.accent || "blue",
+        experience: readExperience(),
+        education: readEntries(educationList, ["school", "credential", "year", "score"]),
+        skillGroups: readEntries(skillGroupList, ["category", "skills"]),
+        certificates: readEntries(certificateList, ["name", "issuer", "date"])
+      }
+    };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (quotaErr) {
+      if (state.biodata && state.biodata.portraitData) {
+        state.biodata.portraitData = "";
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+    }
+  } catch (err) {
+    console.warn("Could not save state to localStorage", err);
+  }
+}
+
+function debouncedSave() {
+  if (isRestoring) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 250);
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    return data && typeof data === "object" ? data : null;
+  } catch (err) {
+    return null;
+  }
+}
+
 function selectTemplate(choice) {
   const template = choice.dataset.template || "floral";
   document.querySelectorAll("#templateStrip .template-choice").forEach((button) => {
@@ -169,6 +255,7 @@ function selectTemplate(choice) {
   });
   paper.dataset.template = template;
   renderDetails();
+  saveState();
 }
 
 function entryValue(entry, field) {
@@ -212,6 +299,7 @@ function refreshIcons() {
     window.lucide.createIcons();
   }
 }
+window.refreshIcons = refreshIcons;
 
 function createProject(data) {
   const article = document.createElement("article");
@@ -227,6 +315,7 @@ function createProject(data) {
   remove.addEventListener("click", () => {
     article.remove();
     renderResume();
+    saveState();
   });
   head.append(title, remove);
   const grid = document.createElement("div");
@@ -255,6 +344,7 @@ function createEntry(kind, data) {
   remove.addEventListener("click", () => {
     article.remove();
     renderResume();
+    saveState();
   });
   head.append(title, remove);
   const grid = document.createElement("div");
@@ -278,6 +368,7 @@ function createEntry(kind, data) {
       projects.appendChild(createProject({}));
       refreshIcons();
       renderResume();
+      saveState();
     });
     article.append(head, grid, projects, addProject);
     return article;
@@ -545,6 +636,7 @@ function selectAccent(choice) {
     button.setAttribute("aria-pressed", active ? "true" : "false");
   });
   resumePaper.dataset.accent = accent;
+  saveState();
 }
 
 function selectFormat(choice) {
@@ -556,6 +648,7 @@ function selectFormat(choice) {
   });
   resumePaper.dataset.format = format;
   renderResume();
+  saveState();
 }
 
 function setMode(mode) {
@@ -573,6 +666,7 @@ function setMode(mode) {
   if (mode === "biodata") renderDetails();
   else renderResume();
   refreshIcons();
+  saveState();
 }
 
 function slugify(value) {
@@ -585,9 +679,26 @@ function activePaper() {
 
 form.addEventListener("submit", (event) => event.preventDefault());
 resumeForm.addEventListener("submit", (event) => event.preventDefault());
-form.addEventListener("input", renderDetails);
-photoToggle.addEventListener("change", applyPhotoVisibility);
-resumeForm.addEventListener("input", renderResume);
+form.addEventListener("input", () => {
+  renderDetails();
+  debouncedSave();
+});
+form.addEventListener("change", () => {
+  renderDetails();
+  debouncedSave();
+});
+photoToggle.addEventListener("change", () => {
+  applyPhotoVisibility();
+  saveState();
+});
+resumeForm.addEventListener("input", () => {
+  renderResume();
+  debouncedSave();
+});
+resumeForm.addEventListener("change", () => {
+  renderResume();
+  debouncedSave();
+});
 
 document.querySelectorAll("#templateStrip .template-choice").forEach((button) => {
   button.setAttribute("aria-pressed", button.classList.contains("active") ? "true" : "false");
@@ -610,24 +721,28 @@ requireElement("addExperience").addEventListener("click", () => {
   experienceList.appendChild(createEntry("experience", {}));
   refreshIcons();
   renderResume();
+  saveState();
 });
 
 requireElement("addEducation").addEventListener("click", () => {
   educationList.appendChild(createEntry("education", {}));
   refreshIcons();
   renderResume();
+  saveState();
 });
 
 requireElement("addSkillGroup").addEventListener("click", () => {
   skillGroupList.appendChild(createEntry("skill", {}));
   refreshIcons();
   renderResume();
+  saveState();
 });
 
 requireElement("addCertificate").addEventListener("click", () => {
   certificateList.appendChild(createEntry("certificate", {}));
   refreshIcons();
   renderResume();
+  saveState();
 });
 
 photoInput.addEventListener("change", () => {
@@ -654,6 +769,7 @@ photoInput.addEventListener("change", () => {
     thumb.src = result;
     thumb.alt = "Uploaded portrait preview";
     uploadPreview.appendChild(thumb);
+    saveState();
   };
   reader.readAsDataURL(file);
 });
@@ -794,6 +910,7 @@ function resetBiodata() {
     renderDetails();
   }
   showToast("Form reset.");
+  saveState();
 }
 
 function resetResume() {
@@ -812,6 +929,7 @@ function resetResume() {
     renderResume();
   }
   showToast("Resume reset.");
+  saveState();
 }
 
 requireElement("printBtn").addEventListener("click", printActive);
@@ -830,13 +948,105 @@ requireElement("resetBtn").addEventListener("click", () => {
   resetBiodata();
 });
 
-applyPhotoVisibility();
-fillEntries(experienceList, "experience", starterExperience);
-fillEntries(educationList, "education", starterEducation);
-renderDetails();
-renderResume();
-setMode("biodata");
-refreshIcons();
+function initApp() {
+  const saved = loadState();
+  if (saved) {
+    isRestoring = true;
+    try {
+      if (saved.biodata) {
+        if (saved.biodata.fields) {
+          deserializeForm(form, saved.biodata.fields);
+        }
+        if (typeof saved.biodata.showPhoto === "boolean") {
+          photoToggle.checked = saved.biodata.showPhoto;
+        }
+        applyPhotoVisibility();
+
+        if (saved.biodata.portraitData) {
+          portrait.src = saved.biodata.portraitData;
+          portraitFrame.classList.add("has-image");
+          uploadPreview.replaceChildren();
+          const thumb = document.createElement("img");
+          thumb.src = saved.biodata.portraitData;
+          thumb.alt = "Uploaded portrait preview";
+          uploadPreview.appendChild(thumb);
+        }
+
+        const template = saved.biodata.template || "floral";
+        document.querySelectorAll("#templateStrip .template-choice").forEach((button) => {
+          const active = button.dataset.template === template;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        paper.dataset.template = template;
+      } else {
+        applyPhotoVisibility();
+      }
+
+      if (saved.resume) {
+        if (saved.resume.fields) {
+          deserializeForm(resumeForm, saved.resume.fields);
+        }
+
+        const format = saved.resume.format || "it";
+        document.querySelectorAll("#resumeFormats .template-choice").forEach((button) => {
+          const active = button.dataset.format === format;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        resumePaper.dataset.format = format;
+
+        const accent = saved.resume.accent || "blue";
+        document.querySelectorAll("#accentRow .accent-swatch").forEach((button) => {
+          const active = button.dataset.accent === accent;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        resumePaper.dataset.accent = accent;
+
+        fillEntries(experienceList, "experience", Array.isArray(saved.resume.experience) ? saved.resume.experience : starterExperience);
+        fillEntries(educationList, "education", Array.isArray(saved.resume.education) ? saved.resume.education : starterEducation);
+        fillEntries(skillGroupList, "skill", Array.isArray(saved.resume.skillGroups) ? saved.resume.skillGroups : []);
+        fillEntries(certificateList, "certificate", Array.isArray(saved.resume.certificates) ? saved.resume.certificates : []);
+      } else {
+        fillEntries(experienceList, "experience", starterExperience);
+        fillEntries(educationList, "education", starterEducation);
+        fillEntries(skillGroupList, "skill", []);
+        fillEntries(certificateList, "certificate", []);
+      }
+
+      renderDetails();
+      renderResume();
+      setMode(saved.mode === "resume" ? "resume" : "biodata");
+    } catch (e) {
+      console.error("Error restoring state:", e);
+      applyPhotoVisibility();
+      fillEntries(experienceList, "experience", starterExperience);
+      fillEntries(educationList, "education", starterEducation);
+      fillEntries(skillGroupList, "skill", []);
+      fillEntries(certificateList, "certificate", []);
+      renderDetails();
+      renderResume();
+      setMode("biodata");
+    } finally {
+      document.documentElement.classList.remove("mode-resume-init");
+      isRestoring = false;
+    }
+  } else {
+    applyPhotoVisibility();
+    fillEntries(experienceList, "experience", starterExperience);
+    fillEntries(educationList, "education", starterEducation);
+    fillEntries(skillGroupList, "skill", []);
+    fillEntries(certificateList, "certificate", []);
+    renderDetails();
+    renderResume();
+    setMode("biodata");
+  }
+
+  refreshIcons();
+}
+
+initApp();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
@@ -844,3 +1054,7 @@ if ("serviceWorker" in navigator) {
   });
 }
 window.addEventListener("load", refreshIcons);
+window.addEventListener("beforeunload", () => {
+  clearTimeout(saveTimer);
+  saveState();
+});
