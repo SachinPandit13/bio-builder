@@ -254,6 +254,26 @@ button {
     display: none !important
 }
 
+html.mode-resume-init #biodataStudio {
+    display: none !important;
+}
+
+html.mode-resume-init #resumeStudio {
+    display: grid !important;
+}
+
+html.mode-resume-init #biodataTab {
+    background: transparent !important;
+    color: #6f6670 !important;
+    box-shadow: none !important;
+}
+
+html.mode-resume-init #resumeTab {
+    background: #fff !important;
+    color: var(--wine) !important;
+    box-shadow: 0 1px 4px #3b1d2a14 !important;
+}
+
 .editor-panel,
 .preview-panel {
     background: #fff;
