@@ -7,11 +7,12 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Vivah" />
-    <title>Vivah - Marriage Biodata Builder</title>
+    <meta name="apple-mobile-web-app-title" content="BioCraft" />
+    <title>BioCraft</title>
     <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="icons/icon-192.png" />
+    <link rel="icon" href="icons/favicon.ico" type="image/png" sizes="240x240" />
+    <link rel="icon" href="icons/icon.svg" type="image/png" sizes="240x240" />
+    <link rel="apple-touch-icon" href="icons/favicon.ico" type="image/png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -51,9 +52,9 @@
   </head>
   <body>
     <header class="topbar">
-      <a class="brand" href="#" aria-label="Vivah home">
-        <span class="brand-mark">वि</span>
-        <span><strong>Vivah</strong><small>BIODATA STUDIO</small></span>
+      <a class="brand" href="#" aria-label="BioCraft home">
+        <span class="brand-mark"><img src="icons/BioCraft_logo.png" alt="" /></span>
+        <span><strong><span class="brand-bio">Bio</span><span class="brand-craft">Craft</span></strong><small>Tradition Meets Your Story</small></span>
       </a>
       <div class="studio-tabs" role="tablist" aria-label="Choose a studio">
         <button
@@ -844,13 +845,17 @@ Product manager with 8 years of experience turning customer problems into shippe
           </div>
         </section>
       </div>
-      <footer class="site-footer">
-        <span
-          ><i data-lucide="sparkles" class="footer-icon"></i> Vivah Biodata
-          Studio</span
-        ><span>Your details stay in this browser session.</span>
-      </footer>
     </main>
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="#" aria-label="BioCraft home">
+        <span class="brand-mark"><img src="icons/BioCraft_logo.png" alt="" /></span>
+        <span>
+          <strong><span class="brand-bio">Bio</span><span class="brand-craft">Craft</span></strong>
+          <small>Tradition Meets Your Story</small>
+        </span>
+      </a>
+      <p class="footer-note">Your details stay in this browser session.</p>
+    </footer>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <script src="app.js"></script>
   </body>
