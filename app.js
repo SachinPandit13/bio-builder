@@ -953,7 +953,36 @@ bindClick("resetBtn", () => {
   resetBiodata();
 });
 
+function setupSectionAccordion(formEl) {
+  const sections = [...formEl.querySelectorAll(":scope > .form-section")];
+  const setOpen = (target) => {
+    sections.forEach((section) => {
+      const open = section === target;
+      section.classList.toggle("is-open", open);
+      const heading = section.querySelector(":scope > h3");
+      if (heading) heading.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  };
+  sections.forEach((section, index) => {
+    const heading = section.querySelector(":scope > h3");
+    if (!heading) return;
+    heading.setAttribute("role", "button");
+    heading.tabIndex = 0;
+    heading.setAttribute("aria-expanded", index === 0 ? "true" : "false");
+    const toggle = () => setOpen(section.classList.contains("is-open") ? null : section);
+    heading.addEventListener("click", toggle);
+    heading.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      toggle();
+    });
+  });
+  setOpen(sections[0] || null);
+}
+
 function initApp() {
+  setupSectionAccordion(form);
+  setupSectionAccordion(resumeForm);
   const saved = loadState();
   if (saved) {
     isRestoring = true;
