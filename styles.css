@@ -21,6 +21,7 @@ html {
 }
 
 body {
+    position: relative;
     margin: 0;
     min-height: 100vh;
     display: flex;
@@ -185,6 +186,99 @@ button {
     display: flex;
     flex-direction: column;
     padding: 1.5rem calc(1rem + env(safe-area-inset-right)) 0 calc(1rem + env(safe-area-inset-left))
+}
+
+.gold-flow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none
+}
+
+.gold-flow::before,
+.gold-flow::after {
+    content: "";
+    position: absolute;
+    inset: -30%;
+    background-repeat: repeat;
+    pointer-events: none
+}
+
+.gold-flow::before {
+    background-image:
+        radial-gradient(circle, #f8e7b8 0 2px, transparent 2.8px),
+        radial-gradient(circle, #e4c36a 0 1.6px, transparent 2.4px),
+        radial-gradient(circle, #c69a50 0 1px, transparent 2px);
+    background-size: 110px 84px, 150px 110px, 86px 130px;
+    animation: gold-flow 16s linear infinite, gold-blink 2.8s ease-in-out infinite
+}
+
+.gold-flow::after {
+    background-image:
+        radial-gradient(circle, #8b2e42 0 2px, transparent 2.8px),
+        radial-gradient(circle, #b24a5e 0 1.5px, transparent 2.3px),
+        radial-gradient(circle, #6d2032 0 1px, transparent 1.8px);
+    background-size: 132px 98px, 96px 140px, 168px 112px;
+    animation: wine-flow 18s linear infinite, wine-blink 2.8s ease-in-out infinite
+}
+
+.app-shell,
+.site-footer,
+.toast {
+    position: relative;
+    z-index: 1
+}
+
+@keyframes gold-flow {
+    from {
+        background-position: 0 0, 20px 12px, 40px 28px
+    }
+    to {
+        background-position: 110px -84px, -150px 110px, 86px -130px
+    }
+}
+
+@keyframes wine-flow {
+    from {
+        background-position: 30px 18px, 12px 40px, 60px 8px
+    }
+    to {
+        background-position: -132px 98px, 96px -140px, 168px 112px
+    }
+}
+
+@keyframes gold-blink {
+    0%,
+    100% {
+        opacity: 0.22
+    }
+    50% {
+        opacity: 0.9
+    }
+}
+
+@keyframes wine-blink {
+    0%,
+    100% {
+        opacity: 0.32
+    }
+    50% {
+        opacity: 0.08
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gold-flow::before,
+    .gold-flow::after {
+        animation: none
+    }
+    .gold-flow::before {
+        opacity: 0.35
+    }
+    .gold-flow::after {
+        opacity: 0.18
+    }
 }
 
 .intro {
@@ -1828,6 +1922,7 @@ html.mode-resume-init #resumeTab {
     .template-strip,
     .preview-footer,
     .site-footer,
+    .gold-flow,
     .toast {
         display: none !important
     }
