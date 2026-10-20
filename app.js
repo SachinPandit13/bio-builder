@@ -932,13 +932,18 @@ function resetResume() {
   saveState();
 }
 
-requireElement("printBtn").addEventListener("click", printActive);
-requireElement("printBtnResume").addEventListener("click", printActive);
-requireElement("downloadBtn").addEventListener("click", downloadPdf);
-requireElement("downloadTop").addEventListener("click", downloadPdf);
-requireElement("downloadBtnResume").addEventListener("click", downloadPdf);
+function bindClick(id, handler) {
+  const element = document.getElementById(id);
+  if (element) element.addEventListener("click", handler);
+}
 
-requireElement("resetBtn").addEventListener("click", () => {
+bindClick("printBtn", printActive);
+bindClick("printBtnResume", printActive);
+bindClick("downloadBtn", downloadPdf);
+bindClick("downloadTop", downloadPdf);
+bindClick("downloadBtnResume", downloadPdf);
+
+bindClick("resetBtn", () => {
   if (currentMode === "resume") {
     if (!window.confirm("Reset the resume to the starter example?")) return;
     resetResume();
