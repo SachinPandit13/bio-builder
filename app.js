@@ -798,6 +798,45 @@ function lockA4Box(element) {
   element.style.setProperty("box-sizing", "border-box", "important");
 }
 
+function downloadButtons() {
+  return ["downloadBtn", "downloadTop", "downloadBtnResume"]
+    .map((id) => document.getElementById(id))
+    .filter((button) => button !== null);
+}
+
+function isIos() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+async function deliverPdf(blob, filename) {
+  const file = new File([blob], filename, { type: "application/pdf" });
+  const canShareFile = typeof navigator.canShare === "function"
+    && navigator.canShare({ files: [file] });
+  if (isIos() && canShareFile) {
+    try {
+      await navigator.share({ files: [file], title: filename });
+      return true;
+    } catch (error) {
+      if (error && error.name === "AbortError") return false;
+    }
+  }
+  const url = URL.createObjectURL(blob);
+  if (isIos()) {
+    window.location.assign(url);
+    return true;
+  }
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+  return true;
+}
+
 function renderPdfSheet(source) {
   const host = document.createElement("div");
   host.className = "pdf-render-host";
@@ -825,11 +864,7 @@ async function downloadPdf() {
   const filename = currentMode === "resume"
     ? `${slug || "resume"}-resume.pdf`
     : `${slug || "marriage-biodata"}.pdf`;
-  const buttons = [
-    requireElement("downloadBtn"),
-    requireElement("downloadTop"),
-    requireElement("downloadBtnResume")
-  ];
+  const buttons = downloadButtons();
   buttons.forEach((button) => {
     button.disabled = true;
     button.dataset.oldHtml = button.innerHTML;
@@ -837,12 +872,18 @@ async function downloadPdf() {
   });
   const host = renderPdfSheet(activePaper());
   const sheet = host.firstElementChild;
+  const previousScroll = window.scrollY;
+  const previousOverflow = document.body.style.overflow;
+  const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+  document.documentElement.style.scrollBehavior = "auto";
+  document.body.style.overflow = "visible";
+  window.scrollTo(0, 0);
   try {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
     await new Promise((resolve) => {
       requestAnimationFrame(() => requestAnimationFrame(resolve));
     });
-    await window.html2pdf().set({
+    const blob = await window.html2pdf().set({
       margin: 0,
       filename,
       image: { type: "jpeg", quality: 0.98 },
@@ -878,13 +919,19 @@ async function downloadPdf() {
         }
       },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-    }).from(sheet).save();
-    showToast(currentMode === "resume" ? "Your resume PDF is ready." : "Your biodata PDF is ready.");
+    }).from(sheet).outputPdf("blob");
+    const saved = await deliverPdf(blob, filename);
+    if (saved) {
+      showToast(currentMode === "resume" ? "Your resume PDF is ready." : "Your biodata PDF is ready.");
+    }
   } catch (error) {
     console.error("PDF export failed:", error);
     showToast("PDF export failed. Try Print / Save PDF.");
   } finally {
     host.remove();
+    document.body.style.overflow = previousOverflow;
+    document.documentElement.style.scrollBehavior = previousScrollBehavior;
+    window.scrollTo(0, previousScroll);
     buttons.forEach((button) => {
       button.disabled = false;
       button.innerHTML = button.dataset.oldHtml || '<i data-lucide="download"></i> Download PDF';
@@ -953,14 +1000,49 @@ bindClick("resetBtn", () => {
   resetBiodata();
 });
 
+function holdViewport(anchor) {
+  const startTop = anchor.getBoundingClientRect().top;
+  const root = document.documentElement;
+  const previous = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
+  let running = true;
+  const tick = () => {
+    if (!running) return;
+    const drift = anchor.getBoundingClientRect().top - startTop;
+    if (Math.abs(drift) > 0.5) window.scrollTo(0, window.scrollY + drift);
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  window.setTimeout(() => {
+    running = false;
+    root.style.scrollBehavior = previous;
+  }, 420);
+}
+
 function setupSectionAccordion(formEl) {
   const sections = [...formEl.querySelectorAll(":scope > .form-section")];
+  sections.forEach((section) => {
+    const heading = section.querySelector(":scope > h3");
+    if (!heading || section.querySelector(":scope > .section-body")) return;
+    const body = document.createElement("div");
+    const inner = document.createElement("div");
+    body.className = "section-body";
+    inner.className = "section-body-inner";
+    while (heading.nextSibling) inner.appendChild(heading.nextSibling);
+    body.appendChild(inner);
+    section.appendChild(body);
+  });
   const setOpen = (target) => {
     sections.forEach((section) => {
       const open = section === target;
       section.classList.toggle("is-open", open);
       const heading = section.querySelector(":scope > h3");
+      const body = section.querySelector(":scope > .section-body");
       if (heading) heading.setAttribute("aria-expanded", open ? "true" : "false");
+      if (body) {
+        body.inert = !open;
+        body.setAttribute("aria-hidden", open ? "false" : "true");
+      }
     });
   };
   sections.forEach((section, index) => {
@@ -969,7 +1051,10 @@ function setupSectionAccordion(formEl) {
     heading.setAttribute("role", "button");
     heading.tabIndex = 0;
     heading.setAttribute("aria-expanded", index === 0 ? "true" : "false");
-    const toggle = () => setOpen(section.classList.contains("is-open") ? null : section);
+    const toggle = () => {
+      holdViewport(heading);
+      setOpen(section.classList.contains("is-open") ? null : section);
+    };
     heading.addEventListener("click", toggle);
     heading.addEventListener("keydown", (event) => {
       if (event.key !== "Enter" && event.key !== " ") return;
@@ -978,6 +1063,11 @@ function setupSectionAccordion(formEl) {
     });
   });
   setOpen(sections[0] || null);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      sections.forEach((section) => section.classList.add("accordion-ready"));
+    });
+  });
 }
 
 function initApp() {
