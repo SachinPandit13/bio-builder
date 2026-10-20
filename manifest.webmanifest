@@ -1,0 +1,30 @@
+{
+  "name": "BioCraft",
+  "short_name": "BioCraft",
+  "description": "Tradition Meets Your Story",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fffaf3",
+  "theme_color": "#8b2e42",
+  "icons": [
+    {
+      "src": "icons/BioCraft_logo.png",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "240x240",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/favicon.ico",
+      "sizes": "240x240",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
