@@ -1,5 +1,6 @@
 * {
-    box-sizing: border-box
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent
 }
 
 :root {
@@ -21,6 +22,7 @@ html {
 }
 
 body {
+    position: relative;
     margin: 0;
     min-height: 100vh;
     display: flex;
@@ -187,6 +189,105 @@ button {
     padding: 1.5rem calc(1rem + env(safe-area-inset-right)) 0 calc(1rem + env(safe-area-inset-left))
 }
 
+.gold-flow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none
+}
+
+.gold-flow::before,
+.gold-flow::after {
+    content: "";
+    position: absolute;
+    inset: -30%;
+    background-repeat: repeat;
+    pointer-events: none
+}
+
+.gold-flow::before {
+    background-image:
+        radial-gradient(circle, #f8e7b8 0 2px, transparent 2.8px),
+        radial-gradient(circle, #e4c36a 0 1.6px, transparent 2.4px),
+        radial-gradient(circle, #c69a50 0 1px, transparent 2px);
+    background-size: 110px 84px, 150px 110px, 86px 130px;
+    animation: gold-flow 16s linear infinite, gold-blink 2.8s ease-in-out infinite
+}
+
+.gold-flow::after {
+    background-image:
+        radial-gradient(circle, #8b2e42 0 2px, transparent 2.8px),
+        radial-gradient(circle, #b24a5e 0 1.5px, transparent 2.3px),
+        radial-gradient(circle, #6d2032 0 1px, transparent 1.8px);
+    background-size: 132px 98px, 96px 140px, 168px 112px;
+    animation: wine-flow 18s linear infinite, wine-blink 2.8s ease-in-out infinite
+}
+
+.app-shell,
+.site-footer,
+.toast {
+    position: relative;
+    z-index: 1
+}
+
+@keyframes gold-flow {
+    from {
+        background-position: 0 0, 20px 12px, 40px 28px
+    }
+    to {
+        background-position: 110px -84px, -150px 110px, 86px -130px
+    }
+}
+
+@keyframes wine-flow {
+    from {
+        background-position: 30px 18px, 12px 40px, 60px 8px
+    }
+    to {
+        background-position: -132px 98px, 96px -140px, 168px 112px
+    }
+}
+
+@keyframes gold-blink {
+    0%,
+    100% {
+        opacity: 0.22
+    }
+    50% {
+        opacity: 0.9
+    }
+}
+
+@keyframes wine-blink {
+    0%,
+    100% {
+        opacity: 0.32
+    }
+    50% {
+        opacity: 0.08
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gold-flow::before,
+    .gold-flow::after {
+        animation: none
+    }
+    .gold-flow::before {
+        opacity: 0.35
+    }
+    .gold-flow::after {
+        opacity: 0.18
+    }
+    .section-body,
+    .section-body-inner,
+    .form-section h3,
+    .form-section h3::after {
+        transition: none
+    }
+}
+
 .intro {
     display: flex;
     flex-direction: column;
@@ -319,6 +420,10 @@ html.mode-resume-init #resumeTab {
     box-shadow: none
 }
 
+.editor-panel {
+    overflow-anchor: none
+}
+
 .editor-panel form {
     display: flex;
     flex-direction: column;
@@ -368,12 +473,13 @@ html.mode-resume-init #resumeTab {
     font-weight: 600;
     margin: 0;
     padding-bottom: 0;
-    border-bottom: 0;
+    border-bottom: 1px solid transparent;
     display: flex;
     align-items: center;
     gap: 0.625rem;
     cursor: pointer;
-    user-select: none
+    user-select: none;
+    transition: margin-bottom 0.32s ease, padding-bottom 0.32s ease, border-color 0.32s ease
 }
 
 .form-section h3::after {
@@ -384,13 +490,14 @@ html.mode-resume-init #resumeTab {
     border-right: 2px solid #9b8b93;
     border-bottom: 2px solid #9b8b93;
     transform: rotate(45deg);
-    flex: none
+    flex: none;
+    transition: transform 0.32s ease, margin-top 0.32s ease
 }
 
 .form-section.is-open h3 {
     margin-bottom: 0.875rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid #f0ebee
+    border-bottom-color: #f0ebee
 }
 
 .form-section.is-open h3::after {
@@ -398,8 +505,28 @@ html.mode-resume-init #resumeTab {
     margin-top: 0.25rem
 }
 
-.form-section:not(.is-open) > :not(h3) {
-    display: none
+.section-body {
+    display: grid;
+    grid-template-rows: 0fr
+}
+
+.form-section.accordion-ready .section-body {
+    transition: grid-template-rows 0.32s ease
+}
+
+.form-section.is-open .section-body {
+    grid-template-rows: 1fr
+}
+
+.section-body-inner {
+    min-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.24s ease
+}
+
+.form-section.is-open .section-body-inner {
+    opacity: 1
 }
 
 .section-icon {
@@ -756,9 +883,15 @@ html.mode-resume-init #resumeTab {
     padding: 0.5rem;
     display: flex;
     justify-content: center;
-    overflow: auto;
+    overflow: hidden;
     min-height: 0;
     min-width: 0
+}
+
+.paper-fit {
+    width: 100%;
+    max-width: 520px;
+    margin-inline: auto
 }
 
 .paper {
@@ -767,10 +900,12 @@ html.mode-resume-init #resumeTab {
     --paper-accent: #a73336;
     --paper-gold: #c98e39;
     position: relative;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     max-width: 520px;
     min-width: 0;
-    aspect-ratio: 210/297;
+    aspect-ratio: 210 / 297;
     height: auto;
     min-height: 0;
     background: var(--paper-bg);
@@ -903,6 +1038,7 @@ html.mode-resume-init #resumeTab {
 .paper-header {
     position: relative;
     z-index: 2;
+    flex: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -954,7 +1090,13 @@ html.mode-resume-init #resumeTab {
     grid-template-columns: minmax(0, 1fr) 25%;
     gap: 5%;
     position: relative;
-    z-index: 2
+    z-index: 2;
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch
 }
 
 .paper-main {
@@ -1038,11 +1180,11 @@ html.mode-resume-init #resumeTab {
 }
 
 .paper-footer {
-    position: absolute;
+    position: relative;
     z-index: 2;
-    bottom: 5.2%;
-    left: 12%;
-    right: 12%;
+    flex: none;
+    margin-top: 8px;
+    margin-bottom: 0.85rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1305,10 +1447,12 @@ html.mode-resume-init #resumeTab {
 
 .resume-sheet {
     position: relative;
+    display: flex;
+    flex-direction: column;
     width: 100%;
     max-width: 520px;
     min-width: 0;
-    aspect-ratio: 210/297;
+    aspect-ratio: 210 / 297;
     height: auto;
     background: #fffdf8;
     color: #2c2826;
@@ -1319,6 +1463,7 @@ html.mode-resume-init #resumeTab {
 }
 
 .resume-header {
+    flex: none;
     margin: 0 0 12px
 }
 
@@ -1350,7 +1495,13 @@ html.mode-resume-init #resumeTab {
 .resume-body {
     display: flex;
     flex-direction: column;
-    gap: 11px
+    gap: 11px;
+    flex: 1;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch
 }
 
 .resume-primary,
@@ -1615,7 +1766,7 @@ html.mode-resume-init #resumeTab {
 }
 
 .pdf-render-host {
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 0;
     width: 794px;
@@ -1628,6 +1779,7 @@ html.mode-resume-init #resumeTab {
 
 .pdf-export.paper,
 .pdf-export.resume-sheet {
+    display: block !important;
     width: 794px !important;
     height: 1122px !important;
     max-width: none !important;
@@ -1693,8 +1845,21 @@ html.mode-resume-init #resumeTab {
     gap: 26px !important
 }
 
+.pdf-export .paper-content,
+.pdf-export .resume-body {
+    overflow: visible !important;
+    flex: none !important;
+    min-height: 0 !important;
+    max-height: none !important
+}
+
 .pdf-export .paper-footer {
+    position: absolute !important;
     bottom: 45px !important;
+    left: 12% !important;
+    right: 12% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
     font-size: 12px !important
 }
 
@@ -1828,6 +1993,7 @@ html.mode-resume-init #resumeTab {
     .template-strip,
     .preview-footer,
     .site-footer,
+    .gold-flow,
     .toast {
         display: none !important
     }
@@ -1865,8 +2031,17 @@ html.mode-resume-init #resumeTab {
         overflow: visible !important
     }
 
+    .paper-fit {
+        width: auto !important;
+        aspect-ratio: auto !important;
+        margin: 0 !important
+    }
+
     .paper,
     .resume-sheet {
+        position: static !important;
+        display: block !important;
+        transform: none !important;
         width: 210mm !important;
         height: 297mm !important;
         max-width: none !important;
@@ -1878,6 +2053,22 @@ html.mode-resume-init #resumeTab {
         box-shadow: none !important;
         page-break-after: avoid !important;
         break-after: avoid !important
+    }
+
+    .paper-content,
+    .resume-body {
+        overflow: visible !important;
+        flex: none !important;
+        max-height: none !important
+    }
+
+    .paper-footer {
+        position: absolute !important;
+        bottom: 12mm !important;
+        left: 15mm !important;
+        right: 15mm !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important
     }
 
     .paper-border {
