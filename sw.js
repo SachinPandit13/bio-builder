@@ -1,4 +1,4 @@
-const CACHE = "biocraft-v7";
+const CACHE = "biocraft-v8";
 const FILES = [
   "./index.html",
   "./styles.css",
