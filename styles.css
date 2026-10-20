@@ -447,9 +447,19 @@ html.mode-resume-init #resumeTab {
 }
 
 .footer-contact a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--wine);
     text-decoration: none;
     overflow-wrap: anywhere
+}
+
+.footer-contact a svg,
+.footer-contact a [data-lucide] {
+    width: 1rem;
+    height: 1rem;
+    flex: none
 }
 
 .footer-contact a:hover {
